@@ -4,7 +4,7 @@ from graphIO import writeDOT, loadgraph
 
 def doeAlles():
     # laad de grafen
-    L = loadgraph('Graphs/crefBM_2_49.grl',readlist=True)
+    L = loadgraph('Graphs/crefBM_4_9.grl',readlist=True)
     graph_list = L[0]
     # kleur alle nodes naar aanleiding van hun degree (aantal buren)
     # Optimalisaties:   - alle nodes met degree 1 worden verwijderd
@@ -13,7 +13,9 @@ def doeAlles():
     # Hierna wordt de lijst van nodes gesorteerd op kleur
     maxDeg = []
     sortedVertices = [[]]*len(graph_list)
+    print('- Initial coloring...')
     for i in range(0, len(graph_list)):
+        print(i, ' of ', len(graph_list))
         maxDeg.append(0)
         for j in range(0, len(graph_list[i].V())):
             currDeg = graph_list[i].V()[j].deg()
@@ -25,24 +27,41 @@ def doeAlles():
         writeDOT(graph_list[i],('Results/colorful_' + str(i) + '.dot'))
 
     converged = False
-    hasDupColors = False
+    hasDupColors = [False]*len(graph_list)
     iteration_counter = 0
+    print('- Recursive coloring...')
     while not converged:
+        print('Iteration ', iteration_counter)
+        converged = True
         for i in range(0, len(graph_list)):
-            converged, hasDupColors, maxDeg[i] = color_Nbss(sortedVertices[i], maxDeg[i])
+            print(i, ' of ', len(graph_list))
+            isConverged, hasDups, maxDeg[i] = color_Nbss(sortedVertices[i], maxDeg[i])
+            if not isConverged:
+                converged = False
+            hasDupColors[i] = hasDups
             # update colors of nodes in graph
-            for j in range(0, len(sortedVertices[i])):
-                graph_list[i].V()[j].colornum = merge_sort_label(sortedVertices[i])[graph_list[i].V()[j]._label].colornum
+            sortedToLabelVertices = merge_sort_label(sortedVertices[i])
+            for j in range(0, len(sortedToLabelVertices)):
+                graph_list[i].V()[j].colornum = sortedToLabelVertices[graph_list[i].V()[j]._label].colornum
             sortedVertices[i] = merge_sort_color(graph_list[i].V())
             writeDOT(graph_list[i],('Results/colorfulIt_' + str(i) + '_' + str(iteration_counter) + '.dot'))
         iteration_counter += 1
-    if hasDupColors:
-        print('Dups found: problem for now')
-        return
+    print('- Matching graphs...')
     for i in range(0, len(graph_list)):
-        for j in range(i + 1, len(graph_list)):
-            if maxDeg[i] == maxDeg[j]:
-                print('Iso found:   ', i, ' and ', j)
+        if hasDupColors[i]:
+            print('Dups found in ', i, ' : problem for now')
+        else:
+            list1 = merge_sort_color(graph_list[i].V())
+            for j in range(i + 1, len(graph_list)):
+                if maxDeg[i] == maxDeg[j]:
+                    list2 = merge_sort_color(graph_list[j].V())
+                    found = True
+                    for k in range(0, len(list1)):
+                        if not compareLists(merge_sort_color(list1[k].nbs()), merge_sort_color(list2[k].nbs())):
+                            found = False
+                            break
+                    if found:
+                        print('Iso found:   ', i, ' and ', j)
 
 def color_Nbss(sortedVertices, maxDeg):
     converged = True
@@ -50,25 +69,26 @@ def color_Nbss(sortedVertices, maxDeg):
 
     startColor = sortedVertices[0].colornum
     startNbss = merge_sort_color(sortedVertices[0].nbs())
-    colorChangedNodes = []
+    colorChangedNeigbors = []
     for i in range(1, len(sortedVertices)):
+        currNbs = merge_sort_color(sortedVertices[i].nbs())
         if sortedVertices[i].colornum == startColor:
             hasDupColors = True
             changed = False
-            if len(colorChangedNodes) > 0:
-                for j in range(0, len(colorChangedNodes)):
-                    if compareLists(merge_sort_color(colorChangedNodes[j].nbs()), merge_sort_color(sortedVertices[i].nbs())):
-                        sortedVertices[i].colornum = colorChangedNodes[j].colornum
+            if len(colorChangedNeigbors) > 0:
+                for j in range(0, len(colorChangedNeigbors)):
+                    if compareLists(colorChangedNeigbors[j][1], currNbs):
+                        sortedVertices[i].colornum = colorChangedNeigbors[j][0]
                         changed = True
                         converged = False
-            if not changed and not compareLists(startNbss, merge_sort_color(sortedVertices[i].nbs())):
+            if not changed and not compareLists(startNbss, currNbs):
                 maxDeg += 1
                 sortedVertices[i].colornum = maxDeg
-                colorChangedNodes.append(sortedVertices[i])
+                colorChangedNeigbors.append((sortedVertices[i].colornum, currNbs))
                 converged = False
         else:
             startColor = sortedVertices[i].colornum
-            startNbss = merge_sort_color(sortedVertices[i].nbs())
+            startNbss = currNbs
             colorChangedNodes = []
     return converged, hasDupColors, maxDeg
 
@@ -105,7 +125,7 @@ def merge_sort_label(vertices):
         r = []
         fi = si = 0
         while fi < len(f) and si < len(s):
-            if f[fi]._label < s[si]._label:
+            if f[fi].get_label() < s[si].get_label():
                 r.append(f[fi])
                 fi += 1
             else:
