@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="453f8028-fb45-42ff-9ffc-efda2dd2caf7" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\Rob\git\Mod7Group2\GI\DoeDingen.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/basicgraphs.py" afterPath="$PROJECT_DIR$/basicgraphs.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorfulIt_0_0.dot" afterPath="$PROJECT_DIR$/Results/colorfulIt_0_0.dot" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorfulIt_1_0.dot" afterPath="$PROJECT_DIR$/Results/colorfulIt_1_0.dot" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_0.dot" afterPath="$PROJECT_DIR$/Results/colorful_0.dot" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_1.dot" afterPath="$PROJECT_DIR$/Results/colorful_1.dot" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_2.dot" afterPath="$PROJECT_DIR$/Results/colorful_2.dot" />
@@ -34,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GIFinder.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GIFinder.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GIFinder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.50718683" vertical-offset="586" max-vertical-offset="6137">
-              <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2204" max-vertical-offset="6290">
+              <caret line="151" column="52" selection-start-line="151" selection-start-column="52" selection-end-line="151" selection-end-column="52" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -56,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="graphinfo.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="graphinfo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/graphinfo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="275" max-vertical-offset="1122">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7060932" vertical-offset="337" max-vertical-offset="1122">
+              <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -102,9 +98,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="7" />
-    <option name="width" value="1918" />
-    <option name="height" value="1030" />
+    <option name="x" value="-6" />
+    <option name="width" value="1931" />
+    <option name="height" value="1032" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -371,7 +367,13 @@
       <option name="project" value="LOCAL" />
       <updated>1424624117508</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Mooie dingentjes">
+      <created>1425291787328</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1425291787328</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -395,24 +397,24 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="7" y="0" width="1918" height="1030" extended-state="0" />
-    <editor active="false" />
+    <frame x="-6" y="0" width="1931" height="1032" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32993197" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30454546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30385488" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15786667" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15677966" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3284091" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4090909" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40816328" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -438,20 +440,18 @@
     <MESSAGE value="Speedup: from O(n) or O(n^2) to O(log n)&#10;" />
     <MESSAGE value="Merge remote-tracking branch 'origin/master'&#10;&#10;Conflicts:&#10;&#9;GI/.idea/workspace.xml&#10;&#9;GI/DoeDingen.py&#10;&#9;GI/Results/colorfulIt_0_0.dot&#10;&#9;GI/Results/colorfulIt_1_0.dot&#10;&#9;GI/Results/colorful_0.dot&#10;&#9;GI/Results/colorful_1.dot&#10;&#9;GI/Results/colorful_2.dot&#10;&#9;GI/Results/colorful_3.dot&#10;&#9;GI/basicgraphs.py&#10;&#9;&#10;Also added .gitignore for Results folder&#10;&#10;" />
     <MESSAGE value="Working isomorphism finder with more elaborate printing of progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working isomorphism finder with more elaborate printing of progress" />
+    <MESSAGE value="Mooie dingentjes" />
+    <MESSAGE value="Mooie dingentjes v2" />
+    <MESSAGE value="NU" />
+    <option name="LAST_COMMIT_MESSAGE" value="NU" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinder.py</url>
-          <line>50</line>
-          <option name="timeStamp" value="64" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/GIFinder.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="68" />
+          <line>81</line>
+          <option name="timeStamp" value="81" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -464,7 +464,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="69" />
+      <option name="time" value="82" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -743,21 +743,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/graphinfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="275" max-vertical-offset="1122">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GIFinder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.50718683" vertical-offset="586" max-vertical-offset="6137">
-          <caret line="49" column="28" selection-start-line="49" selection-start-column="28" selection-end-line="49" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2204" max-vertical-offset="6290">
+          <caret line="151" column="52" selection-start-line="151" selection-start-column="52" selection-end-line="151" selection-end-column="52" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/graphinfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7060932" vertical-offset="337" max-vertical-offset="1122">
+          <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
+          <folding />
         </state>
       </provider>
     </entry>
