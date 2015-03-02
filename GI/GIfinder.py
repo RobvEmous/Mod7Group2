@@ -72,22 +72,19 @@ class GIFinder():
                 if not graphs_info[i].has_converged():
                     converged = False
                 # update colors of nodes in graph
-                sorted_to_label_vertices = self.merge_sort_pairs(self, sortedVerticesCopy, 0)
+                sorted_to_label_vertices = self.merge_sort_label(self, sortedVerticesCopy)
                 for j in range(0, len(sorted_to_label_vertices)):
-                    graph_list[i].V()[j].colornum = sorted_to_label_vertices[graph_list[i].V()[j].get_label()][1]
+                    graph_list[i].V()[j].colornum = sorted_to_label_vertices[graph_list[i].V()[j].get_label()].colornum
                 sorted_vertices[i] = self.merge_sort_color(self, graph_list[i].V())
                 print(' # unique colors =', graphs_info[i].num_of_colors(), '; converged =', graphs_info[i].has_converged()
                       , '; all colors unique =', not graphs_info[i].has_duplicate_colors())
-            # update isomorphism
+                writeDOT(graph_list[i], ('Results/colorfulIt_' + str(i) + '_' + str(iteration_counter) + '.dot'))
+            # update isomorphism table
             for entry in isomorphic[:]:
                 if not graphs_info[entry[0]].equal_degree_and_colors(graphs_info[entry[1]]):
                     isomorphic.remove(entry)
             iteration_counter += 1
         print('Graphs have converged after', iteration_counter, 'iterations.')
-        if self._save_results:
-            for i in range(0, len(graph_list)):
-                writeDOT(graph_list[i], ('Results/colorfulIt_' + str(i) + '_' + str(iteration_counter - 1) + '.dot'))
-
         # final part of algorithm to display the found isomorphisms between the graphs
         print('- Matching graphs...')
         isomorphic = self.mergeIsos(isomorphic)
@@ -129,30 +126,30 @@ class GIFinder():
         startColor = sortedVertices[0].colornum
         startNbss = self.merge_sort_color(self, sortedVertices[0].nbs())
         colorChangedNeigbors = []
-        sortedVerticesCopy = [[sortedVertices[0].get_label(), startColor]]
         for i in range(1, len(sortedVertices)):
-            sortedVerticesCopy.append([sortedVertices[i].get_label(), sortedVertices[i].colornum])
             currNbs = self.merge_sort_color(self, sortedVertices[i].nbs())
             if sortedVertices[i].colornum == startColor:
+                # same color: check whether neighbors equal (if not: change color)
                 changed = False
                 if len(colorChangedNeigbors) > 0:
                     for j in range(0, len(colorChangedNeigbors)):
                         if self.compare_vertices_color(self, colorChangedNeigbors[j][1], currNbs):
-                            sortedVerticesCopy[i][1] = colorChangedNeigbors[j][0]
+                            sortedVertices[i].colornum = colorChangedNeigbors[j][0]
                             changed = True
                             converged = False
                 if not changed and not self.compare_vertices_color(self, startNbss, currNbs):
+                    colorChangedNeigbors.append((sortedVertices[i].get_label(), sortedVertices[i].colornum,  graph_info.max_degree() + 1, currNbs))
                     graph_info.increment_num_and_degree(1)
-                    sortedVerticesCopy[i][1] = graph_info.max_degree()
-                    colorChangedNeigbors.append((sortedVerticesCopy[i][1], currNbs))
+                    sortedVertices[i].colornum = graph_info.max_degree()
                     converged = False
             else:
+                # not same color: new color found, update start variables
                 startColor = sortedVertices[i].colornum
                 startNbss = currNbs
-        if converged or graph_info.max_degree() >= len(sortedVertices):
+        if converged or graph_info.num_of_colors() >= len(sortedVertices):
             graph_info.set_has_converged(True)
         graph_info.set_has_duplicate_colors(len(sortedVertices) != graph_info.num_of_colors())
-        return sortedVerticesCopy, graph_info
+        return sortedVertices, graph_info
 
     # merges 'o.a.' transitive isomorphisms to one list: [0,1],[1,3] -> [0,1,3] and [0,1],[0,3] -> [0,1,3]
     def mergeIsos(self, oldList):
@@ -212,7 +209,7 @@ class GIFinder():
             r = []
             fi = si = 0
             while fi < len(f) and si < len(s):
-                if f[fi][index] < s[si][index] or f[fi][index] == s[si][index] and f[fi][index == 0] < s[si][int(index == 0)]:
+                if f[fi][index] < s[si][index] or f[fi][index] == s[si][index] and f[fi][index == 0] < s[si][index == 0]:
                     r.append(f[fi])
                     fi += 1
                 else:
