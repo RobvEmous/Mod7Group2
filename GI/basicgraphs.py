@@ -36,6 +36,9 @@ class vertex():
         """
         self._graph=graph
         self._label=label
+        self._colornum = 0
+        self._nbs_colors_sum = 0
+        self._changed = True
 
     def __repr__(self):
         return str(self._label)
@@ -88,6 +91,16 @@ class vertex():
                 break
         return incl
 
+    def get_colornum(self):
+        return self._colornum
+
+    def set_colornum(self, num):
+        self._colornum = num
+        self._graph.set_changed(True)
+
+    def set_changed(self, changed):
+        self._changed = changed
+
     def nbs(self):
         """
         Returns the list of neighbors of vertex <self>.
@@ -103,6 +116,15 @@ class vertex():
         Returns the degree of vertex <self>.
         """
         return len(self.inclist())
+
+    def sum_nbs_colors(self):
+        if self._changed:
+            self._nbs_colors_sum = 0
+            neigbors = self.nbs()
+            for i in range(0, len(neigbors)):
+                self._nbs_colors_sum += neigbors[i].get_colornum()
+        return self._nbs_colors_sum
+
 
 class edge():
     """
@@ -219,6 +241,11 @@ class graph():
         """
         return self._V[i]
 
+    def set_changed(self, changed):
+        if changed:
+            for i in range(0, len(self._V)):
+                self._V[i].set_changed(True)
+
     def addvertex(self,label=-1):
         """
         Add a vertex to the graph.
@@ -229,6 +256,7 @@ class graph():
             self._nextlabel+=1
         u=vertex(self,label)
         self._V.append(u)
+        self._changed = True
         return u
 
     def addedge(self,tail,head):
@@ -258,6 +286,7 @@ class graph():
         e2=edge(head,tail)
         self._EDouble.append(e2)
         self.unsorted = True
+        self._changed = True
         return e1
 
     def sortEdgesRec(self, list):

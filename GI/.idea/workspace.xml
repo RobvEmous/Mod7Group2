@@ -3,8 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="453f8028-fb45-42ff-9ffc-efda2dd2caf7" name="Default" comment="">
       <change type="MOVED" beforePath="C:\Users\Rob\git\Mod7Group2\GI\GIfinder.py" afterPath="$PROJECT_DIR$/GIFinder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/basicgraphs.py" afterPath="$PROJECT_DIR$/basicgraphs.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorfulIt_0_0.dot" afterPath="$PROJECT_DIR$/Results/colorfulIt_0_0.dot" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorfulIt_1_0.dot" afterPath="$PROJECT_DIR$/Results/colorfulIt_1_0.dot" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_0.dot" afterPath="$PROJECT_DIR$/Results/colorful_0.dot" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_1.dot" afterPath="$PROJECT_DIR$/Results/colorful_1.dot" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_2.dot" afterPath="$PROJECT_DIR$/Results/colorful_2.dot" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/colorful_3.dot" afterPath="$PROJECT_DIR$/Results/colorful_3.dot" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="GI.iws" />
@@ -23,6 +28,10 @@
   <component name="DaemonCodeAnalyzer">
     <disable_hints />
   </component>
+  <component name="ErrorTreeViewConfiguration">
+    <option name="autoscrollToSource" value="true" />
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="true" />
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="GI" />
@@ -32,8 +41,8 @@
       <file leaf-file-name="GIFinder.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GIFinder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.30383974" vertical-offset="2028" max-vertical-offset="6239">
-              <caret line="130" column="56" selection-start-line="130" selection-start-column="56" selection-end-line="130" selection-end-column="56" />
+            <state vertical-scroll-proportion="0.981378" vertical-offset="5984" max-vertical-offset="6817">
+              <caret line="383" column="0" selection-start-line="383" selection-start-column="0" selection-end-line="383" selection-end-column="0" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -104,8 +113,8 @@
       <file leaf-file-name="basicgraphs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/basicgraphs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6375">
-              <caret line="15" column="28" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1963" max-vertical-offset="6868">
+              <caret line="137" column="10" selection-start-line="137" selection-start-column="10" selection-end-line="137" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -129,9 +138,9 @@
         <option value="$PROJECT_DIR$/graphIO.py" />
         <option value="$PROJECT_DIR$/DoeDingen.py" />
         <option value="$PROJECT_DIR$/GraphInfo.py" />
-        <option value="$PROJECT_DIR$/basicgraphs.py" />
         <option value="$PROJECT_DIR$/GIfinder.py" />
         <option value="$PROJECT_DIR$/graphinfo.py" />
+        <option value="$PROJECT_DIR$/basicgraphs.py" />
         <option value="$PROJECT_DIR$/GIFinder.py" />
       </list>
     </option>
@@ -209,7 +218,7 @@
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="false" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
+    <property name="options.lastSelected" value="preferences.lookFeel" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -438,16 +447,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3288889" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29777777" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29777777" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15725593" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3284091" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -483,10 +492,23 @@
     <MESSAGE value="Mooie dingentjes" />
     <MESSAGE value="Mooie dingentjes v2" />
     <MESSAGE value="NU" />
-    <option name="LAST_COMMIT_MESSAGE" value="NU" />
+    <MESSAGE value="Die malle code die nu gewoon lekker werkt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Die malle code die nu gewoon lekker werkt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/GIFinder.py</url>
+          <line>255</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/basicgraphs.py</url>
+          <line>120</line>
+          <option name="timeStamp" value="98" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -497,7 +519,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="84" />
+      <option name="time" value="100" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -760,14 +782,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/basicgraphs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6375">
-          <caret line="15" column="28" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Graphs/crefBM_6_7680.grl">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="783955">
@@ -808,10 +822,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/basicgraphs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1963" max-vertical-offset="6868">
+          <caret line="137" column="10" selection-start-line="137" selection-start-column="10" selection-end-line="137" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GIFinder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30383974" vertical-offset="2028" max-vertical-offset="6239">
-          <caret line="130" column="56" selection-start-line="130" selection-start-column="56" selection-end-line="130" selection-end-column="56" />
+        <state vertical-scroll-proportion="0.981378" vertical-offset="5984" max-vertical-offset="6817">
+          <caret line="383" column="0" selection-start-line="383" selection-start-column="0" selection-end-line="383" selection-end-column="0" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
