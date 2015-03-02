@@ -5,11 +5,12 @@ It contains three classes: vertex, edge and graph.
 
 The interface of these classes is extensive and allows programming all kinds of graph algorithms.
 
-However, the data structure used is quite basic and inefficient: a graph object stores only a vertex list and an edge list, and methods such as adjacency testing / finding neighbors of a vertex require going through the entire edge list!
+NOT THE CASE ANYMORE - However, the data structure used is quite basic and inefficient: a graph object stores only a vertex list and an edge list, and methods such as adjacency testing / finding neighbors of a vertex require going through the entire edge list!
+--> Listing vertices, edges, direct neighbors and adjacency testing is now implemented with roughly O(log n) complexity
 """
-# version: 29-01-2015, Paul Bonsma & Rob & Joshua
+# version: 29-01-2015, Paul Bonsma & Rob van Emous & Joshua de Bie
 
-unsafe=False
+unsafe=True
 # Set to True for faster, but unsafe listing of all vertices and edges.
 
 class GraphError(Exception):
