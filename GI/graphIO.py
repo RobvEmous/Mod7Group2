@@ -207,9 +207,9 @@ def writeDOT(G,filename,directed=False):
         if hasattr(v,'colortext'):
             options+='color="'+v.colortext+'",'
         elif hasattr(v,'colornum'):
-            options+='color='+str(v.colornum%numcolors+1)+', colorscheme='+defaultcolorscheme+','
-            if v.colornum>=numcolors:
-                options+='style=filled,fillcolor='+str(v.colornum//numcolors+1)+','
+            options+='color='+str(v.colornum()%numcolors+1)+', colorscheme='+defaultcolorscheme+','
+            if v.colornum()>=numcolors:
+                options+='style=filled,fillcolor='+str(v.colornum()//numcolors+1)+','
         if len(options)>0:
             writefile.write('    '+str(name[v])+' ['+options[:-1]+']\n')
         else:
@@ -223,9 +223,9 @@ def writeDOT(G,filename,directed=False):
         if hasattr(e,'colortext'):
             options+='color="'+e.colortext+'",'
         elif hasattr(e,'colornum'):
-            options+='color='+str(e.colornum%numcolors+1)+', colorscheme='+defaultcolorscheme+','
-            if e.colornum>=numcolors:
-                options+='style=filled,fillcolor='+str(e.colornum//numcolors+1)+','
+            options+='color='+str(e.colornum()%numcolors+1)+', colorscheme='+defaultcolorscheme+','
+            if e.colornum()>=numcolors:
+                options+='style=filled,fillcolor='+str(e.colornum()//numcolors+1)+','
         if len(options)>0:
             options=' ['+options[:-1]+']'
         if directed:

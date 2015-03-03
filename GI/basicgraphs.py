@@ -6,7 +6,7 @@ It contains three classes: vertex, edge and graph.
 The interface of these classes is extensive and allows programming all kinds of graph algorithms.
 
 NOT THE CASE ANYMORE - However, the data structure used is quite basic and inefficient: a graph object stores only a vertex list and an edge list, and methods such as adjacency testing / finding neighbors of a vertex require going through the entire edge list!
---> Listing vertices, edges, direct neighbors and adjacency testing is now implemented with roughly O(log n) complexity
+--> Listing vertices, edges, direct neighbors and adjacency testing is now implemented with roughly O(log n) complexity. Note that only simple graphs are currently supported
 """
 # version: 29-01-2015, Paul Bonsma & Rob van Emous & Joshua de Bie
 
@@ -91,6 +91,9 @@ class vertex():
                 break
         return incl
 
+    def colornum(self):
+        return self._colornum
+
     def get_colornum(self):
         return self._colornum
 
@@ -120,9 +123,9 @@ class vertex():
     def sum_nbs_colors(self):
         if self._changed:
             self._nbs_colors_sum = 0
-            neigbors = self.nbs()
-            for i in range(0, len(neigbors)):
-                self._nbs_colors_sum += neigbors[i].get_colornum()
+            neighbors = self.nbs()
+            for i in range(0, len(neighbors)):
+                self._nbs_colors_sum += neighbors[i].get_colornum()
         return self._nbs_colors_sum
 
 

@@ -44,7 +44,7 @@ class GIFinder():
                     graphs_info[i].set_max_degree(curr_deg)
                 list_of_unique_colors = self.merge_zip(self, list_of_unique_colors, curr_deg, False)
             # sort list of vertices of graph to color
-            sorted_vertices[i] = self.merge_sort_color_and_neighbors(self, graph_list[i].V())
+            sorted_vertices[i] = self.merge_sort_color(self, graph_list[i].V())
             if self._save_results:
                 writeDOT(graph_list[i], ('Results/colorful_' + str(i) + '.dot'))
             # count number of unique colors
@@ -150,10 +150,12 @@ class GIFinder():
                 sorted_to_label_vertices = self.merge_sort_label(self, sortedVertices[start_index:i])
                 for entry in color_changes:
                     sorted_to_label_vertices[self.binary_search_label(self, sorted_to_label_vertices, entry[0])].set_colornum(entry[1])
+                if len(color_changes) > 0:
+                    sortedVertices = sortedVertices[0:start_index] + self.merge_sort_color_and_neighbors(self, sortedVertices[start_index:])
                 color_changes = []
                 colorChangedNeigbors = []
                 start_index = i
-        sorted_to_label_vertices = self.merge_sort_label(self, sortedVertices[start_index:i])
+        sorted_to_label_vertices = self.merge_sort_label(self, sortedVertices[start_index:(len(sortedVertices))])
         for entry in color_changes:
             sorted_to_label_vertices[self.binary_search_label(self, sorted_to_label_vertices, entry[0])].set_colornum(entry[1])
         if converged or graph_info.num_of_colors() >= len(sortedVertices):
@@ -238,12 +240,12 @@ class GIFinder():
     def merge_sort_color_and_neighbors(self, vertices):
         if len(vertices) > 1:
             i = int((len(vertices) / 2))
-            f = self.merge_sort_color(self, vertices[:i])
-            s = self.merge_sort_color(self, vertices[i:])
+            f = self.merge_sort_color_and_neighbors(self, vertices[:i])
+            s = self.merge_sort_color_and_neighbors(self, vertices[i:])
             r = []
             fi = si = 0
             while fi < len(f) and si < len(s):
-                if f[fi].get_colornum() < s[si].get_colornum() or (f[fi].get_colornum() == s[si].get_colornum() and f[fi].sum_nbs_colors() > s[si].sum_nbs_colors()):
+                if f[fi].get_colornum() > s[si].get_colornum() or (f[fi].get_colornum() == s[si].get_colornum() and f[fi].sum_nbs_colors() > s[si].sum_nbs_colors()):
                     r.append(f[fi])
                     fi += 1
                 else:
@@ -267,7 +269,7 @@ class GIFinder():
             r = []
             fi = si = 0
             while fi < len(f) and si < len(s):
-                if f[fi].get_colornum() < s[si].get_colornum():
+                if f[fi].get_colornum() < s[si].get_colornum(): # TODO should be larger than
                     r.append(f[fi])
                     fi += 1
                 else:
