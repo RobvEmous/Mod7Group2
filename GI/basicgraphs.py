@@ -37,8 +37,9 @@ class vertex():
         self._graph=graph
         self._label=label
         self._colornum = 0
-        self._nbs_colors_sum = 0
         self._changed = True
+        self._sorted = False
+        self._nbs_list = []
 
     def __repr__(self):
         return str(self._label)
@@ -99,35 +100,57 @@ class vertex():
 
     def set_colornum(self, num):
         self._colornum = num
-        self._graph.set_changed(True)
+        for nb in self.nbs():
+            nb.set_sorted = False
 
     def set_changed(self, changed):
         self._changed = changed
+
+    def set_sorted(self, sorted):
+        self._sorted = sorted
 
     def nbs(self):
         """
         Returns the list of neighbors of vertex <self>.
         In case of parallel edges: duplicates are not removed from this list!
         """
-        nbl=[]
-        for e in self.inclist():
-            nbl.append(e.otherend(self))
-        return nbl
+        if self._changed or len(self._nbs_list) == 0:
+            for e in self.inclist():
+                self._nbs_list.append(e.otherend(self))
+            self._changed = False
+        if not self._sorted:
+            self._nbs_list = self.merge_sort_color(self, self._nbs_list)
+        return self._nbs_list
 
     def deg(self):
         """
         Returns the degree of vertex <self>.
         """
-        return len(self.inclist())
+        return len(self.nbs())
 
-    def sum_nbs_colors(self):
-        if self._changed:
-            self._nbs_colors_sum = 0
-            neighbors = self.nbs()
-            for i in range(0, len(neighbors)):
-                self._nbs_colors_sum += neighbors[i].get_colornum()
-        return self._nbs_colors_sum
-
+    # Merge sorts the list of vertices sorts to color
+    @staticmethod
+    def merge_sort_color(self, vertices):
+        if len(vertices) > 1:
+            i = int((len(vertices) / 2))
+            f = self.merge_sort_color(self, vertices[:i])
+            s = self.merge_sort_color(self, vertices[i:])
+            r = []
+            fi = si = 0
+            while fi < len(f) and si < len(s):
+                if f[fi].get_colornum() < s[si].get_colornum():
+                    r.append(f[fi])
+                    fi += 1
+                else:
+                    r.append(s[si])
+                    si += 1
+            if fi < len(f):
+                r += f[fi:]
+            elif si < len(s):
+                r += s[si:]
+            return r
+        else:
+            return vertices
 
 class edge():
     """
@@ -196,19 +219,26 @@ class graph():
         Optional argument <n>: number of vertices.
         Optional argument <simple>: indicates whether the graph should stay simple.
         """
-        self._V=[]
-        self._E=[]
-        self._EDouble=[]
-        self._directed=False
+        self._V = []
+        self._E = []
+        self._EDouble = []
+        self._directed = False
         # may be changed later for a more general version that can also
         # handle directed graphs.
-        self._simple=simple
-        self._nextlabel=0
+        self._simple = simple
+        self._nextlabel = 0
         for i in range(n):
             self.addvertex()
+        self._label = 0
 
     def __repr__(self):
         return 'V='+str(self._V)+'\nE='+str(self._E)
+
+    def get_label(self):
+        return self._label
+
+    def set_label(self, label):
+        self._label = label
 
     def V(self):
         """
@@ -218,6 +248,9 @@ class graph():
             return self._V
         else:
             return self._V[:]	# return a *copy* of this list
+
+    def set_V(self, V):
+        self._V = V
 
     def E(self):
         """
