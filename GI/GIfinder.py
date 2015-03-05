@@ -1,7 +1,7 @@
 import pdb
 
 from graphIO import writeDOT, loadgraph
-from graphinfo import GraphInfo
+from GraphInfo import GraphInfo
 
 """
 Class for finding graph isomorphisms
@@ -18,6 +18,51 @@ class GIFinder():
 
     def __repr__(self):
         return str(self._graph_id)
+
+    def test_graphs_on_isomorphism(self, sorted_vertices, graphs_info):
+        iso_tuples = list()
+        for a in range(1, len(sorted_vertices)):
+            for i in range(a+1, len(sorted_vertices)):
+                app_graphs_info = list(graphs_info[a])
+                app_graphs_info.append(graphs_info[i])
+                comparison_graphs = list(sorted_vertices[a])
+                comparison_graphs.append(sorted_vertices[i])
+                if self.graphs_have_isomorphisms(comparison_graphs, graphs_info):
+                    pair = (a,i)
+                    iso_tuples.append(pair)
+        print(iso_tuples)
+
+    def graphs_have_isomorphisms(self, sortedVertices, graph_info):
+        colored_vertices = self.color_vertices_by_neighbors(sortedVertices, graph_info)
+        if len(graph_info) == len(sortedVertices) == 2:
+            if graph_info[0].equal_degree_and_colors(graph_info[1]):
+                return True
+            #TODO getdoublecolors() nog te implementeren
+            double_colors1 = graph_info[0].get_double_colors()
+            double_colors2 = graph_info[1].get_double_colors()
+            double_color = self.find_common_double_colors(double_colors1, double_colors2)
+            if double_color >= 0:
+                double_color_vertices, indices = self.binary_search_all_nodes_with_color(sortedVertices[0],double_color,False)
+                double_color_vertices1, indices1 = self.binary_search_all_nodes_with_color(sortedVertices[1],double_color,True)
+                if len(indices) > 0 and len(indices1) > 0:
+                    max_color = graph_info[0].max_degree()+1
+                    #TODO Hier graphinfo updaten?
+                    sortedVertices[0][indices[0]].set_colornum(max_color)
+                    for i in range (0, len(indices1)):
+                        max_color = graph_info[1].max_degree()+1
+                        sortedVertices[1][indices1[i]].set_colornum(max_color)
+                        has_isomorphisms = self.graphs_have_isomorphisms(sortedVertices, graph_info)
+                        if has_isomorphisms:
+                            return has_isomorphisms
+        return False
+
+    def find_common_double_colors(self, double_colors1, double_colors2):
+        for i in range (0, len(double_colors1)):
+            for j in range (0, len(double_colors2)):
+                color = double_colors1[i]
+                if color == double_colors2[j]:
+                    return color
+        return -1
 
     def find_isomorphisms(self):
         print()
@@ -384,6 +429,43 @@ class GIFinder():
         else:
             return -1
 
+        # Binary search for label within the list of vertices.
+    @staticmethod
+    def binary_search_all_nodes_with_color(self, vertices, color_number, return_multiple_nodes):
+        l = 0
+        h = len(vertices) - 1
+        while h - l > 0 and vertices[l].get_color() != color_number:
+            m = int((l + h) / 2)
+            if vertices[m].get_color() == color_number:
+                l = m
+            elif vertices[m].get_color() < color_number:
+                l = m + 1
+            else:
+                h = m - 1
+        if vertices[l].get_color() == color_number:
+            if return_multiple_nodes:
+                vertices1 = [vertices[l]]
+                indices = [l]
+                index = l
+                index -= 1
+                while (vertices[index].get_color() == color_number):
+                    vertices1.append(vertices[index])
+                    indices.append(index)
+                    index -= 1
+                index = l
+                index += 1
+                while (vertices[index].get_color() == color_number):
+                    vertices1.append(vertices[index])
+                    indices.append(index)
+                    index += 1
+                return vertices1, indices
+            else:
+                vertices1 = [vertices[l]]
+                indices = [l]
+                return vertices1, indices
+        else:
+            return [],[]
+
     # Compares colors of the two lists of vertices which should already be sorted to color
     @staticmethod
     def compare_vertices_color(self, l1, l2):
@@ -395,4 +477,4 @@ class GIFinder():
         return True
 
 gifinder = GIFinder(6, 15, True, True)
-gifinder.find_isomorphisms()
+gifinder.solve_non_isomorphic()
