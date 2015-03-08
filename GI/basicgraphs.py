@@ -113,6 +113,7 @@ class vertex():
         """
         Returns the list of neighbors of vertex <self>.
         In case of parallel edges: duplicates are not removed from this list!
+        It will only (re)calculate the neighbors if necessary for better performance
         """
         if self._changed or len(self._nbs_list) == 0:
             for e in self.inclist():
@@ -390,9 +391,9 @@ class graph():
         """
         print(max)
         print(min)
-        if(max == min):
+        if max == min:
             return None
-        if (u < v):
+        if u < v:
             high = v
             low = u
         else:
@@ -401,7 +402,7 @@ class graph():
         e = self._EDouble
         b = max - min
         i = (b // 2) + min
-        if e[i][1]==high and e[i][0]==low:
+        if e[i][1] == high and e[i][0]==low:
             return e[i]
         elif i == len(e) - 1:
             return None

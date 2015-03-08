@@ -1,3 +1,5 @@
+import MergeAndSearchTools
+
 __author__ = 'Rob'
 
 """
@@ -36,17 +38,18 @@ class GraphInfo():
     def swap_colors(self, color_in, color_out):
         self.increment_num_of_a_color(color_in)
         self.decrement_num_of_a_color(color_out)
+        # print(self.__repr__(), 'swap', color_out, '->', color_in)
 
     def increment_num_of_a_color(self, color):
-        index = self.binary_search_pairs(self, self._num_of_color_list, color, 0)
+        index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
         if index == -1:
-            self._num_of_color_list = self.merge_zip_number(self, self._num_of_color_list, (color, 1), 0)
+            self._num_of_color_list = MergeAndSearchTools.zip_number(self._num_of_color_list, (color, 1), False)
         else:
             self._num_of_color_list[index] = (color, self._num_of_color_list[index][1] + 1)
         self._changed = True
 
     def decrement_num_of_a_color(self, color):
-        index = self.binary_search_pairs(self, self._num_of_color_list, color, 0)
+        index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
         if index != -1:
             if self._num_of_color_list[index][1] == 1:
                 self._num_of_color_list.remove(self._num_of_color_list[index])
@@ -55,11 +58,14 @@ class GraphInfo():
         self._changed = True
 
     def get_num_of_a_color(self, color):
-        index = self.binary_search_pairs(self, self._num_of_color_list, color, 0)
+        index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
         if index != -1:
             return self._num_of_color_list[index][1]
         else:
             return -1
+
+    def get_all_colors(self):
+        return self._num_of_color_list
 
     def has_converged(self):
         return self._has_converged
@@ -72,8 +78,8 @@ class GraphInfo():
 
     def get_duplicate_colors(self):
         if self._changed:
-            self._duplicate_colors = self.merge_sort_pairs(self, self._num_of_color_list, 1)
-            index = self.binary_search_bigger_or_equal_pairs(self, self._duplicate_colors, 2, 1)
+            self._duplicate_colors = MergeAndSearchTools.sort_pairs(self._num_of_color_list, 1)
+            index = MergeAndSearchTools.search_pairs(self._duplicate_colors, 2, 1, 1)
             if index == -1:
                 self._duplicate_colors = []
                 return self._duplicate_colors
@@ -86,108 +92,3 @@ class GraphInfo():
             if found:
                 self._duplicate_colors = self._duplicate_colors[index:]
         return self._duplicate_colors
-
-    # Merge sorts the list of number-tuples to the first or second element (indicated by index)
-    @staticmethod
-    def merge_sort_pairs(self, tuple_list, index):
-        if len(tuple_list) > 2:
-            i = int((len(tuple_list) / 2))
-            f = self.merge_sort_pairs(self, tuple_list[:i], index)
-            s = self.merge_sort_pairs(self, tuple_list[i:], index)
-            r = []
-            fi = si = 0
-            while fi < len(f) and si < len(s):
-                if f[fi][index] < s[si][index] or f[fi][index] == s[si][index] and f[fi][index == 0] < s[si][index == 0]:
-                    r.append(f[fi])
-                    fi += 1
-                else:
-                    r.append(s[si])
-                    si += 1
-            if fi < len(f):
-                r += f[fi:]
-            elif si < len(s):
-                r += s[si:]
-            return r
-        else:
-            return tuple_list
-
-    # Adds one item to a sorted list of tuples
-    @staticmethod
-    def merge_zip_number(self, tuple_list, tuple, index):
-        result = []
-        if len(tuple_list) == 0:
-            result.append(tuple)
-            return result
-        fi = self.binary_search_smaller_or_equal_pairs(self, tuple_list, tuple, index)
-        if fi != -1:
-            result += tuple_list[:(fi + 1)]
-        result.append(tuple)
-        result += tuple_list[(fi + 1):]
-        return result
-
-    # Binary search for the tuple where the first or second element (indicated by index) is equal to value
-    @staticmethod
-    def binary_search_pairs(self, tuple_list, value, index):
-        if len(tuple_list) > 0:
-            l = 0
-            h = len(tuple_list) - 1
-            while h - l > 0 and tuple_list[l][index] != value:
-                m = int((l + h) / 2)
-                if tuple_list[m][index] == value:
-                    l = m
-                elif tuple_list[m][index] < value:
-                    l = m + 1
-                else:
-                    h = m - 1
-            if tuple_list[l][index] == value:
-                return l
-            else:
-                return -1
-        else:
-            return -1
-
-    # Binary search for the tuple where the first or second element (indicated by index) is smaller or equal to value
-    @staticmethod
-    def binary_search_smaller_or_equal_pairs(self, tuple_list, value, index):
-        if len(tuple_list) > 0:
-            l = 0
-            h = len(tuple_list) - 1
-            while h - l > 0 and tuple_list[l][index] != value[index]:
-                m = int((l + h) / 2)
-                if tuple_list[m][index] == value[index]:
-                    l = m
-                elif tuple_list[m][index] < value[index]:
-                    l = m + 1
-                else:
-                    h = m - 1
-            if tuple_list[l][index] <= value[index]:
-                return l
-            elif l > 0:
-                return l - 1
-            else:
-                return -1
-        else:
-            return -1
-
-    # Binary search for the tuple where the first or second element (indicated by index) is smaller or equal to value
-    @staticmethod
-    def binary_search_bigger_or_equal_pairs(self, tuple_list, value, index):
-        if len(tuple_list) > 0:
-            l = 0
-            h = len(tuple_list) - 1
-            while h - l > 0 and tuple_list[l][index] != value:
-                m = int((l + h) / 2)
-                if tuple_list[m][index] == value:
-                    l = m
-                elif tuple_list[m][index] < value:
-                    l = m + 1
-                else:
-                    h = m - 1
-            if tuple_list[l][index] >= value:
-                return l
-            elif l < len(tuple_list) - 1:
-                return l + 1
-            else:
-                return -1
-        else:
-            return -1
