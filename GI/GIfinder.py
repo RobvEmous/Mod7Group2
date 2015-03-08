@@ -1,12 +1,14 @@
 import pdb
 
 from graphIO import writeDOT, loadgraph
-from GraphInfo import GraphInfo
+from graphinfo import GraphInfo
 
 """
 Class for finding graph isomorphisms
-"""
 
+DEPRECATED - Use GIFinderMoreBetter instead!
+Only contains old coloring method for reference
+"""
 
 class GIFinder():
 
@@ -19,52 +21,7 @@ class GIFinder():
     def __repr__(self):
         return str(self._graph_id)
 
-    def test_graphs_on_isomorphism(self, sorted_vertices, graphs_info):
-        iso_tuples = list()
-        for a in range(1, len(sorted_vertices)):
-            for i in range(a+1, len(sorted_vertices)):
-                app_graphs_info = list(graphs_info[a])
-                app_graphs_info.append(graphs_info[i])
-                comparison_graphs = list(sorted_vertices[a])
-                comparison_graphs.append(sorted_vertices[i])
-                if self.graphs_have_isomorphisms(comparison_graphs, graphs_info):
-                    pair = (a,i)
-                    iso_tuples.append(pair)
-        print(iso_tuples)
-
-    def graphs_have_isomorphisms(self, sortedVertices, graph_info):
-        colored_vertices = self.color_vertices_by_neighbors(sortedVertices, graph_info)
-        if len(graph_info) == len(sortedVertices) == 2:
-            if graph_info[0].equal_degree_and_colors(graph_info[1]):
-                return True
-            #TODO getdoublecolors() nog te implementeren
-            double_colors1 = graph_info[0].get_double_colors()
-            double_colors2 = graph_info[1].get_double_colors()
-            double_color = self.find_common_double_colors(double_colors1, double_colors2)
-            if double_color >= 0:
-                double_color_vertices, indices = self.binary_search_all_nodes_with_color(sortedVertices[0],double_color,False)
-                double_color_vertices1, indices1 = self.binary_search_all_nodes_with_color(sortedVertices[1],double_color,True)
-                if len(indices) > 0 and len(indices1) > 0:
-                    max_color = graph_info[0].max_degree()+1
-                    #TODO Hier graphinfo updaten?
-                    sortedVertices[0][indices[0]].set_colornum(max_color)
-                    for i in range (0, len(indices1)):
-                        max_color = graph_info[1].max_degree()+1
-                        sortedVertices[1][indices1[i]].set_colornum(max_color)
-                        has_isomorphisms = self.graphs_have_isomorphisms(sortedVertices, graph_info)
-                        if has_isomorphisms:
-                            return has_isomorphisms
-        return False
-
-    def find_common_double_colors(self, double_colors1, double_colors2):
-        for i in range (0, len(double_colors1)):
-            for j in range (0, len(double_colors2)):
-                color = double_colors1[i]
-                if color == double_colors2[j]:
-                    return color
-        return -1
-
-    def find_isomorphisms(self):
+    def find_isomorphisms_old(self):
         print()
         print('Finding Graph Isomorphisms between', self._num_graphs, 'graphs with', self._num_vertices, 'vertices.')
 
@@ -166,7 +123,7 @@ class GIFinder():
     #   - if two vertices had the same color, but have now changed color
     #     this color will be the same iff both have equally colored neighbors
     # Should be called iteratively until the coloring is stable (has diverged)
-    def color_vertices_by_neighbors(self, sortedVertices, graph_info):
+    def color_vertices_by_neighbors_old(self, sortedVertices, graph_info):
         converged = True
         start_index = 0
         startColor = sortedVertices[0].get_colornum()
@@ -207,274 +164,6 @@ class GIFinder():
             graph_info.set_has_converged(True)
         graph_info.set_has_duplicate_colors(len(sortedVertices) != graph_info.num_of_colors())
         return sortedVertices, graph_info
-
-    # merges 'o.a.' transitive isomorphisms to one list: [0,1],[1,3] -> [0,1,3] and [0,1],[0,3] -> [0,1,3]
-    def mergeIsos(self, oldList):
-        newList = []
-        listIndex = 0
-        while len(oldList) > 0:
-            root = oldList.pop(0)
-            newList.append([root[0], root[1]])
-            while len(oldList) > 0 and oldList[0][0] == root[0]:
-                newList[listIndex].append(oldList.pop(0)[1])
-            len_of_list = len(newList[listIndex])
-            i = 0
-            added = False
-            while i < len_of_list:
-                startIndex = self.binary_search_pairs(self, oldList, newList[listIndex][i], 0)
-                if startIndex == -1:
-                    i += 1
-                    continue
-                # search forward
-                while startIndex < len(oldList) and oldList[startIndex][0] == newList[listIndex][i]:
-                    newItem = oldList.pop(startIndex)[1]
-                    dub = False
-                    for j in range(1, len(newList[listIndex])):
-                        if newList[listIndex][j] == newItem:
-                            dub = True
-                            break
-                    if not dub:
-                        newList[listIndex].append(newItem)
-                        len_of_list += 1
-                        added = True
-                # search backward
-                startIndex -= 1
-                while startIndex >= 0 and oldList[startIndex][0] == newList[listIndex][i]:
-                    newItem = oldList.pop(startIndex)[1]
-                    for j in range(1, len(newList[listIndex])):
-                        if newList[listIndex][j] == newItem:
-                            dub = True
-                            break
-                    if not dub:
-                        newList[listIndex].append(newItem)
-                        len_of_list += 1
-                        added = True
-                    startIndex -= 1
-                    i += 1
-            if added:
-                newList[listIndex].sort()
-            listIndex += 1
-        return newList
-
-    # Merge sorts the list of number-tuples to the first or second element (indicated by index)
-    @staticmethod
-    def merge_sort_pairs(self, list, index):
-        if len(list) > 1:
-            i = int((len(list) / 2))
-            f = self.merge_sort_pairs(self, list[:i], index)
-            s = self.merge_sort_pairs(self, list[i:], index)
-            r = []
-            fi = si = 0
-            while fi < len(f) and si < len(s):
-                if f[fi][index] < s[si][index] or f[fi][index] == s[si][index] and f[fi][index == 0] < s[si][index == 0]:
-                    r.append(f[fi])
-                    fi += 1
-                else:
-                    r.append(s[si])
-                    si += 1
-            if fi < len(f):
-                r += f[fi:]
-            elif si < len(s):
-                r += s[si:]
-            return r
-        else:
-            return list
-
-    # Merge sorts the list of vertices sorts to color and sum of neighbor colors :)
-    @staticmethod
-    def merge_sort_color_and_neighbors(self, vertices):
-        if len(vertices) > 1:
-            i = int((len(vertices) / 2))
-            f = self.merge_sort_color_and_neighbors(self, vertices[:i])
-            s = self.merge_sort_color_and_neighbors(self, vertices[i:])
-            r = []
-            fi = si = 0
-            while fi < len(f) and si < len(s):
-                if f[fi].get_colornum() > s[si].get_colornum() or (f[fi].get_colornum() == s[si].get_colornum() and f[fi].sum_nbs_colors() > s[si].sum_nbs_colors()):
-                    r.append(f[fi])
-                    fi += 1
-                else:
-                    r.append(s[si])
-                    si += 1
-            if fi < len(f):
-                r += f[fi:]
-            elif si < len(s):
-                r += s[si:]
-            return r
-        else:
-            return vertices
-
-    # Merge sorts the list of vertices sorts to color
-    @staticmethod
-    def merge_sort_color(self, vertices):
-        if len(vertices) > 1:
-            i = int((len(vertices) / 2))
-            f = self.merge_sort_color(self, vertices[:i])
-            s = self.merge_sort_color(self, vertices[i:])
-            r = []
-            fi = si = 0
-            while fi < len(f) and si < len(s):
-                if f[fi].get_colornum() < s[si].get_colornum(): # TODO should be larger than
-                    r.append(f[fi])
-                    fi += 1
-                else:
-                    r.append(s[si])
-                    si += 1
-            if fi < len(f):
-                r += f[fi:]
-            elif si < len(s):
-                r += s[si:]
-            return r
-        else:
-            return vertices
-
-    # Merge sorts the list of vertices sorts to label
-    @staticmethod
-    def merge_sort_label(self, vertices):
-        if len(vertices) > 1:
-            i = int((len(vertices) / 2))
-            f = self.merge_sort_label(self, vertices[:i])
-            s = self.merge_sort_label(self, vertices[i:])
-            r = []
-            fi = si = 0
-            while fi < len(f) and si < len(s):
-                if f[fi].get_label() < s[si].get_label():
-                    r.append(f[fi])
-                    fi += 1
-                else:
-                    r.append(s[si])
-                    si += 1
-            if fi < len(f):
-                r += f[fi:]
-            elif si < len(s):
-                r += s[si:]
-            return r
-        else:
-            return vertices
-
-    # Adds one item to a sorted list of numbers
-    @staticmethod
-    def merge_zip(self, number_list, number, allow_dups=True):
-        result = []
-        if len(number_list) == 0:
-            result.append(number)
-            return result
-        fi = self.binary_search_smaller_or_equal(self, number_list, number)
-        if fi != -1:
-            result += number_list[:(fi + 1)]
-        if allow_dups or fi == -1 or number_list[fi] != number:
-            result.append(number)
-        result += number_list[(fi + 1):]
-        return result
-
-    # Adds one item to a sorted list of numbers
-    @staticmethod
-    def binary_search_smaller_or_equal(self, number_list, number):
-        if len(number_list) > 0:
-            l = 0
-            h = len(number_list) - 1
-            while h - l > 0 and number_list[l] != number:
-                m = int((l + h) / 2)
-                if number_list[m] == number:
-                    l = m
-                elif number_list[m] < number:
-                    l = m + 1
-                else:
-                    h = m - 1
-            if number_list[l] <= number:
-                return l
-            elif l > 0:
-                return l - 1
-            else:
-                return -1
-        else:
-            return -1
-
-    # Binary search for the tuple where the first or second element (indicated by index) is equal to value
-    @staticmethod
-    def binary_search_pairs(self, tuple_list, value, index):
-        if len(tuple_list) > 0:
-            l = 0
-            h = len(tuple_list) - 1
-            while h - l > 0 and tuple_list[l][index] != value:
-                m = int((l + h) / 2)
-                if tuple_list[m][index] == value:
-                    l = m
-                elif tuple_list[m][index] < value:
-                    l = m + 1
-                else:
-                    h = m - 1
-            if tuple_list[l][index] == value:
-                return l
-            else:
-                return -1
-        else:
-            return -1
-
-    # Binary search for label within the list of vertices.
-    @staticmethod
-    def binary_search_label(self, vertices, a_label):
-        l = 0
-        h = len(vertices) - 1
-        while h - l > 0 and vertices[l].get_label() != a_label:
-            m = int((l + h) / 2)
-            if vertices[m].get_label() == a_label:
-                l = m
-            elif vertices[m].get_label() < a_label:
-                l = m + 1
-            else:
-                h = m - 1
-        if vertices[l].get_label() == a_label:
-            return l
-        else:
-            return -1
-
-        # Binary search for label within the list of vertices.
-    @staticmethod
-    def binary_search_all_nodes_with_color(self, vertices, color_number, return_multiple_nodes):
-        l = 0
-        h = len(vertices) - 1
-        while h - l > 0 and vertices[l].get_color() != color_number:
-            m = int((l + h) / 2)
-            if vertices[m].get_color() == color_number:
-                l = m
-            elif vertices[m].get_color() < color_number:
-                l = m + 1
-            else:
-                h = m - 1
-        if vertices[l].get_color() == color_number:
-            if return_multiple_nodes:
-                vertices1 = [vertices[l]]
-                indices = [l]
-                index = l
-                index -= 1
-                while (vertices[index].get_color() == color_number):
-                    vertices1.append(vertices[index])
-                    indices.append(index)
-                    index -= 1
-                index = l
-                index += 1
-                while (vertices[index].get_color() == color_number):
-                    vertices1.append(vertices[index])
-                    indices.append(index)
-                    index += 1
-                return vertices1, indices
-            else:
-                vertices1 = [vertices[l]]
-                indices = [l]
-                return vertices1, indices
-        else:
-            return [],[]
-
-    # Compares colors of the two lists of vertices which should already be sorted to color
-    @staticmethod
-    def compare_vertices_color(self, l1, l2):
-        if len(l1) != len(l2):
-            return False
-        for i in range(0, len(l1)):
-            if l1[i].get_colornum() != l2[i].get_colornum():
-                return False
-        return True
 
 gifinder = GIFinder(6, 15, True, True)
 gifinder.solve_non_isomorphic()

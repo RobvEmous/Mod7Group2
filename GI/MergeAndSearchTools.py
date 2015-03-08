@@ -146,6 +146,23 @@ def zip_tuple(tuple_list, a_tuple, index):
     return result
 
 
+def blow_tuples_isomorphisms_all(zipped_tuples):
+    list_new = []
+    for i in range(0, len(zipped_tuples)):
+        for j in range(0, len(zipped_tuples[i])):
+            for k in range(j + 1, len(zipped_tuples[i])):
+                list_new.append((zipped_tuples[i][j], zipped_tuples[i][k]))
+    return list_new
+
+
+def blow_tuples_isomorphisms(zipped_tuples):
+    list_new = []
+    for i in range(0, len(zipped_tuples)):
+        for j in range(1, len(zipped_tuples[i])):
+            list_new.append((zipped_tuples[i][0], zipped_tuples[i][j]))
+    return list_new
+
+
 # merges 'o.a.' transitive isomorphisms to one list: [0,1],[1,3] -> [0,1,3] and [0,1],[0,3] -> [0,1,3]
 def zip_tuples_isomorphisms(list_old):
     list_new = []
@@ -241,6 +258,53 @@ def search_vertex_label(vertices, a_label):
         return -1
 
 
+# Binary search for (all) color(s) within the list of vertices.
+def search_vertex_color(vertices, color, search_duplicates=True):
+    l = 0
+    h = len(vertices) - 1
+    while h - l > 0 and vertices[l].get_color() != color:
+        m = int((l + h) / 2)
+        if vertices[m].get_color() == color:
+            l = m
+        elif vertices[m].get_color() < color:
+            l = m + 1
+        else:
+            h = m - 1
+    if vertices[l].get_color() == color:
+        new_vertices = [vertices[l]]
+        new_vertices_old_indices = [l]
+        if search_duplicates:
+            index = l
+            while True:
+                curr_color = vertices[index].get_color()
+                if curr_color == color:
+                    new_vertices.append(vertices[index])
+                    new_vertices_old_indices.append(index)
+                    if index < len(vertices) - 1:
+                        index += 1
+                    else:
+                        break
+                else:
+                    break
+            if l == 0:
+                return new_vertices, new_vertices_old_indices
+            index = l - 1
+            while True:
+                curr_color = vertices[index].get_color()
+                if curr_color == color:
+                    new_vertices.append(vertices[index])
+                    new_vertices_old_indices.append(index)
+                    if index > 0:
+                        index += 1
+                    else:
+                        break
+                else:
+                    break
+        return new_vertices, new_vertices_old_indices
+    else:
+        return [],[]
+
+
 # searches for a vertex with this color and neighbors
 # Action is whether to search for equal (0), smaller or equal (-1) or bigger or equal (1)
 def search_vertex_color_and_neighbors(color_and_neighbors_list, color_and_neighbor, action):
@@ -250,7 +314,7 @@ def search_vertex_color_and_neighbors(color_and_neighbors_list, color_and_neighb
         comparison = compare_vertex_colors(color_and_neighbors_list[l][1], color_and_neighbor)
         while h - l > 0 and comparison != 0:
             m = int((l + h) / 2)
-            comparison = compare_vertex_colors(color_and_neighbors_list[m][1], color_and_neighbor)
+            comparison = compare_vertex_colors(color_and_neighbors_list[m][1], color_and_neighbor) # this was the nasty bug
             if comparison == 0:
                 l = m
             elif comparison == 1:

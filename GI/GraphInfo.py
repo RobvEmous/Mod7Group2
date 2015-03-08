@@ -82,6 +82,7 @@ class GraphInfo():
             index = MergeAndSearchTools.search_pairs(self._duplicate_colors, 2, 1, 1)
             if index == -1:
                 self._duplicate_colors = []
+                self._changed = False
                 return self._duplicate_colors
             found = False
             while not found and index > 1:
@@ -91,4 +92,5 @@ class GraphInfo():
                 index -= 1
             if found:
                 self._duplicate_colors = self._duplicate_colors[index:]
+            self._changed = False
         return self._duplicate_colors
