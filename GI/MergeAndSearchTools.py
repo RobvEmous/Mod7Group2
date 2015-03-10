@@ -79,7 +79,7 @@ def sort_vertex_color(vertices):
 
 # Merge sorts the list of number-tuples to the first or second element (indicated by index)
 def sort_pairs(tuple_list, index):
-    if len(tuple_list) > 2:
+    if len(tuple_list) >= 2:
         i = int((len(tuple_list) / 2))
         f = sort_pairs(tuple_list[:i], index)
         s = sort_pairs(tuple_list[i:], index)
@@ -259,16 +259,48 @@ def search_vertex_label(vertices, a_label):
 
 
 # Binary search for (all) color(s) within the list of vertices.
-def search_vertex_color(vertices, color, search_duplicates):
-    vertices1 = list()
-    indices = list()
-    for l in range (0,len(vertices)):
-        if vertices[l].get_colornum() == color:
-            vertices1.append(vertices[l])
-            indices.append(l)
-            if search_duplicates == False:
-                return vertices,indices
-    return vertices1,indices
+def search_vertex_color(vertices, color, search_duplicates=True):
+    l = 0
+    h = len(vertices) - 1
+    while h - l > 0 and vertices[l].get_colornum() != color:
+        m = int((l + h) / 2)
+        if vertices[m].get_colornum() == color:
+            l = m
+        elif vertices[m].get_colornum() < color:
+            l = m + 1
+        else:
+            h = m - 1
+    if vertices[l].get_colornum() == color:
+        new_vertices_old_indices = [l]
+        if search_duplicates:
+            if l > 0:
+                index = l - 1
+                while True:
+                    curr_color = vertices[index].get_colornum()
+                    if curr_color == color:
+                        new_vertices_old_indices.append(index)
+                        if index < len(vertices) - 1:
+                            index -= 1
+                        else:
+                            break
+                    else:
+                        break
+            if l == 0:
+                return new_vertices_old_indices
+            index = l + 1
+            while True:
+                curr_color = vertices[index].get_colornum()
+                if curr_color == color:
+                    new_vertices_old_indices.append(index)
+                    if index < len(vertices) - 1:
+                        index += 1
+                    else:
+                        break
+                else:
+                    break
+        return new_vertices_old_indices
+    else:
+        return []
 
 
 # searches for a vertex with this color and neighbors

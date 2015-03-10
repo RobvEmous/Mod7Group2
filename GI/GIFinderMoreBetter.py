@@ -1,7 +1,8 @@
 import MergeAndSearchTools
 from graphIO import writeDOT, loadgraph
-from GraphInfo import GraphInfo
+from graphinfo import GraphInfo
 from time import time
+import copy
 
 """
 Class for finding graph isomorphisms
@@ -19,65 +20,44 @@ class GIFinder():
     def __repr__(self):
         return str(self._num_graphs) + '-' + str(self._num_vertices)
 
-    def test_graphs_on_isomorphism(self,graph_list, sorted_vertices, graphs_info, isomorphic):
-        iso_tuples = list()
-        for a in range(0, len(sorted_vertices)):
-            for i in range(a+1, len(sorted_vertices)):
-                gl = list()
-                gl.append(graph_list[a])
-                gl.append(graph_list[i])
-                list_graph_infos = list()
-                list_graph_infos.append(graphs_info[a])
-                list_graph_infos.append(graphs_info[i])
-                list_graph_compare = list()
-                list_graph_compare.append(sorted_vertices[a])
-                list_graph_compare.append(sorted_vertices[i])
-                isomorphic_list = list()
-                Found=False
-                for b in range(0, len(isomorphic)):
-                    if ((isomorphic[b][0] == a) and (isomorphic[b][1] == i)):
-                        isomorphic_list.append(isomorphic[b])
-                        Found = True
-                if (Found == False):
-                    continue
-                if self.graphs_have_isomorphisms(a,i,gl,list_graph_compare, list_graph_infos,isomorphic_list):
-                    pair = (a,i)
-                    iso_tuples.append(pair)
-        print(iso_tuples)
-
-    def comparenumbers(self,graph1,graph2):
-        if (len(graph1) != len(graph2)):
+    def graphs_have_isomorphisms(self, graph_list, sorted_vertices_list, graph_info_list, isomorphic):
+        if len(isomorphic) == 0:
             return False
-        for i in range (0,len(graph1)):
-            if (graph1[i].get_colornum() != graph2[i].get_colornum()):
+        if not graph_info_list[isomorphic[0][0]].has_duplicate_colors():
+            return True
+
+        double_colors = graph_info_list[isomorphic[0][0]].get_duplicate_colors()
+
+        indices = [MergeAndSearchTools.search_vertex_color(sorted_vertices_list[isomorphic[0][0]], double_colors[0][0], False)]
+        for i in range(0, len(isomorphic)):
+            print(isomorphic)
+            indices.append(MergeAndSearchTools.search_vertex_color(sorted_vertices_list[isomorphic[i][1]], double_colors[0][0], True))
+
+        max_color = graph_info_list[isomorphic[0][0]].max_number() + 1
+        graph_info_list[isomorphic[0][0]].swap_colors(max_color, double_colors[0][0])
+        sorted_vertices_list[isomorphic[0][0]][indices[0][0]].set_colornum(max_color)
+
+        for i in range(0, len(indices[0])):
+            sorted_vertices_list_copy = copy.deepcopy(sorted_vertices_list)
+            graph_info_list_copy = copy.deepcopy(graph_info_list)
+            isomorphic_copy = copy.deepcopy(isomorphic)
+
+            for j in range(1, len(indices)):
+                graph_info_list_copy[isomorphic[j - 1][1]].swap_colors(max_color, double_colors[0][0])
+                sorted_vertices_list_copy[isomorphic[j - 1][1]][indices[j][i]].set_colornum(max_color)
+
+            isomorphic_copy_blow = MergeAndSearchTools.blow_tuples_isomorphisms_all(isomorphic_copy)
+            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, isomorphic_copy_blow)
+            for j in range(0, len(isomorphic_copy_blow)):
+                self.graphs_have_isomorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, [isomorphic_copy_blow[j]])
+                if len(isomorphic_copy_blow[j][:]) == 0:
+                    isomorphic_copy_blow.pop(j)
+            if len(isomorphic_copy_blow) == 0:
                 return False
-        return True
-
-    def graphs_have_isomorphisms(self,a,i,graph_list,sorted_vertices_list, graph_info_list,isomorphic):
-
-        if (len(graph_info_list) == len(sorted_vertices_list) == 2) or (1==1):
-            if ((graph_info_list[1].has_duplicate_colors() == False) and (graph_info_list[0].has_duplicate_colors() == False)):
-                print(str(a),' ',str(i),' ','isomorphic found')
+            elif len(isomorphic_copy_blow) == 1:
                 return True
-            double_colors1 = graph_info_list[0].get_duplicate_colors()
-            double_colors2 = graph_info_list[1].get_duplicate_colors()
-            double_color = self.find_common_double_colors(double_colors1, double_colors2)
-            if double_color >= 0:
-                double_color_vertices, indices = MergeAndSearchTools.search_vertex_color(sorted_vertices_list[0],double_color,False)
-                double_color_vertices1, indices1 = MergeAndSearchTools.search_vertex_color(sorted_vertices_list[1],double_color,True)
-                if len(indices) > 0 and len(indices1) > 0: # onnodig: ze hebben die kleuren toch sws in common? nope er kan een lege lijst returned worden
-                    max_color = graph_info_list[0].max_number()+1
-                    #print(graph_info.get_all_colors())
-                    graph_info_list[1].swap_colors(double_color, max_color)
-                    sorted_vertices_list[0][indices[0]].set_colornum(max_color)
-                    for i in range (0, len(indices1)):
-                        a,b,c,d,e = graph_list,sorted_vertices_list, graph_info_list, isomorphic, max_color
-                        e = graph_info_list[1].max_number()+1
-                        b[1][indices1[i]].set_colornum(e)
-                        self.color_vertices_by_neighbor_rec(a,b, c, d)
-                        has_isomorphisms = self.graphs_have_isomorphisms(a,i,graph_list,sorted_vertices_list, graph_info_list, isomorphic)
-                        if has_isomorphisms:
-                            return has_isomorphisms
+            else:
+                return isomorphic_copy_blow
         return False
 
     def find_common_double_colors(self, double_colors1, double_colors2):
@@ -93,8 +73,10 @@ class GIFinder():
 
         # initialisation part of the algorithm which loads the graphs from a file
         print('- Loading graphs...')
-        graph_list = loadgraph('Graphs/crefBM_'
-                               + str(self._num_graphs) + '_' + str(self._num_vertices) + '.grl', readlist=True)[0]
+        # graph_list = loadgraph('Graphs/crefBM_'
+        #
+        #                    + str(self._num_graphs) + '_' + str(self._num_vertices) + '.grl', readlist=True)[0]
+        graph_list = loadgraph('Graphs/modulesD.grl', readlist=True)[0]
 
         # part I - initial coloring
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
@@ -118,29 +100,28 @@ class GIFinder():
                     sorted_to_label_vertices[graph_list[i].V()[j].get_label()].get_colornum())
 
         # recursively get rid of duplicates or remove iso if proven impossible
-        isomorphic_dups = []
-        isomorphic_zipped = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic)
-        while len(isomorphic_dups) > 0:
-            print('- Matching graphs...')
-            isomorphic_zipped = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic)
-            isomorphic_non_dups = []
+        isomorphic_zipped = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic[:])
 
-            for entry in isomorphic_zipped:
-                if graph_info_list[entry[0]].has_duplicate_colors():
-                    print('undecided found')
+        for entry in isomorphic_zipped[:]:
+            if graph_info_list[entry[0]].has_duplicate_colors():
+                print('undecided found - ', entry)
+                if not self.graphs_have_isomorphisms(graph_list, sorted_vertices_list, graph_info_list,
+                        MergeAndSearchTools.blow_tuples_isomorphisms([entry])):
+                    isomorphic_zipped.remove(entry)
 
         # Part IV all isomorphisms found, print and return results
         print('- Matching graphs...')
-        print('Isomorphism found between: ')
-        first = True
         for i in range(0, len(isomorphic_zipped)):
-            if first:
-                print(isomorphic_zipped[i], end='')
-                first = False
-            elif i < len(isomorphic_zipped) - 1:
-                print(',', isomorphic_zipped[i], end='')
-            else:
-                print(' and', isomorphic_zipped[i])
+            print('Isomorphism found between: ', end='')
+            first = True
+            for j in range(0, len(isomorphic_zipped[i])):
+                if first:
+                    print(isomorphic_zipped[i][j], end='')
+                    first = False
+                elif j < len(isomorphic_zipped[i]) - 1:
+                    print(',', isomorphic_zipped[i][j], end='')
+                else:
+                    print(' and', isomorphic_zipped[i][j])
         return graph_list, sorted_vertices_list, graph_info_list, isomorphic_zipped
 
     def color_all_vertices_by_degree(self, graph_list):
@@ -204,7 +185,7 @@ class GIFinder():
                             sorted_to_label_vertices[graph_list[i].V()[j].get_label()].get_colornum())
                     writeDOT(graph_list[i], ('Results/colorful_it_' + str(iteration_counter)
                                              + '_' + str(graph_list[i].get_label()) + '.dot'))
-                sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(graph_list[i].V())
+                sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(sorted_vertices_list[i])
 
             iteration_counter += 1
 
@@ -298,15 +279,14 @@ class GIFinder():
         return max_color
 
 def testIsoSpeed(num_of_graphs, num_of_vertices):
-    gi_finder = GIFinder(num_of_graphs, num_of_vertices, True, True)
+    gi_finder = GIFinder(num_of_graphs, num_of_vertices, False, True)
     t = time()
     x,y,z,a = gi_finder.find_isomorphisms()
-    gi_finder.test_graphs_on_isomorphism(x,y,z,a)
     print('>> Run time:', time() - t, 'sec.')
 
 # Test run of the 49 and 4098 vertex graphs
 #testIsoSpeed(2, 49)
-testIsoSpeed(4, 7)
+testIsoSpeed(6, 15)
 #testIsoSpeed(4, 9)
 #testIsoSpeed(4, 16)
 #testIsoSpeed(6, 15)

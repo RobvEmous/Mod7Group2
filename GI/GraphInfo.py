@@ -85,7 +85,7 @@ class GraphInfo():
                 self._changed = False
                 return self._duplicate_colors
             found = False
-            while not found and index > 1:
+            while not found and index > 0:
                 if self._duplicate_colors[index - 1][1] == 1:
                     found = True
                     break
