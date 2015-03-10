@@ -259,50 +259,16 @@ def search_vertex_label(vertices, a_label):
 
 
 # Binary search for (all) color(s) within the list of vertices.
-def search_vertex_color(vertices, color, search_duplicates=True):
-    l = 0
-    h = len(vertices) - 1
-    while h - l > 0 and vertices[l].get_color() != color:
-        m = int((l + h) / 2)
-        if vertices[m].get_color() == color:
-            l = m
-        elif vertices[m].get_color() < color:
-            l = m + 1
-        else:
-            h = m - 1
-    if vertices[l].get_color() == color:
-        new_vertices = [vertices[l]]
-        new_vertices_old_indices = [l]
-        if search_duplicates:
-            index = l
-            while True:
-                curr_color = vertices[index].get_color()
-                if curr_color == color:
-                    new_vertices.append(vertices[index])
-                    new_vertices_old_indices.append(index)
-                    if index < len(vertices) - 1:
-                        index += 1
-                    else:
-                        break
-                else:
-                    break
-            if l == 0:
-                return new_vertices, new_vertices_old_indices
-            index = l - 1
-            while True:
-                curr_color = vertices[index].get_color()
-                if curr_color == color:
-                    new_vertices.append(vertices[index])
-                    new_vertices_old_indices.append(index)
-                    if index > 0:
-                        index += 1
-                    else:
-                        break
-                else:
-                    break
-        return new_vertices, new_vertices_old_indices
-    else:
-        return [],[]
+def search_vertex_color(vertices, color, search_duplicates):
+    vertices1 = list()
+    indices = list()
+    for l in range (0,len(vertices)):
+        if vertices[l].get_colornum() == color:
+            vertices1.append(vertices[l])
+            indices.append(l)
+            if search_duplicates == False:
+                return vertices,indices
+    return vertices1,indices
 
 
 # searches for a vertex with this color and neighbors
