@@ -54,76 +54,87 @@ class GIFinder():
 
         # recursively get rid of duplicates or remove iso if proven impossible
         isomorphic_zipped = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic[:])
-
+        new_isos = []
         for entry in isomorphic_zipped[:]:
             if graph_info_list[entry[0]].has_duplicate_colors():
                 print('undecided found - ', entry)
-                if not self.graphs_have_isomorphisms(graph_list, sorted_vertices_list, graph_info_list,
-                        MergeAndSearchTools.blow_tuples_isomorphisms([entry])):
-                    isomorphic_zipped.remove(entry)
+                isos = self.match_pairs_rec(graph_list, sorted_vertices_list, graph_info_list, MergeAndSearchTools.blow_tuples_isomorphisms_list(entry), [])
+                if len(isos) > 0:
+                    new_isos.append(isos)
 
         # Part IV all isomorphisms found, print and return results
         print('- Matching graphs...')
-        for i in range(0, len(isomorphic_zipped)):
+        for i in range(0, len(new_isos)):
             print('Isomorphism found between: ', end='')
             first = True
-            for j in range(0, len(isomorphic_zipped[i])):
+            for j in range(0, len(new_isos[i])):
                 if first:
-                    print(isomorphic_zipped[i][j], end='')
+                    print(new_isos[i][j], end='')
                     first = False
-                elif j < len(isomorphic_zipped[i]) - 1:
-                    print(',', isomorphic_zipped[i][j], end='')
+                elif j < len(new_isos[i]) - 1:
+                    print(',', new_isos[i][j], end='')
                 else:
-                    print(' and', isomorphic_zipped[i][j])
-        return graph_list, sorted_vertices_list, graph_info_list, isomorphic_zipped
+                    print(' and', new_isos[i][j])
+        return new_isos
 
-    def graphs_have_isomorphisms(self, graph_list, sorted_vertices_list, graph_info_list, isomorphic):
-        if len(isomorphic) == 0:
-            # no graphs are isomorphic so return
-            return False
-        if not graph_info_list[isomorphic[0][0]].has_duplicate_colors():
+
+    def match_pairs_rec(self, graph_list, sorted_vertices_list, graph_info_list, todo, matches):
+        at_least_one_match = False
+        temp_matches = []
+        temp_mismatches = []
+        for entry in todo:
+            is_isomorphic = self.graphs_have_isomorphisms(graph_list, sorted_vertices_list, graph_info_list, entry)
+            if is_isomorphic:
+                temp_matches.append(entry)
+                at_least_one_match = True
+            else:
+                temp_mismatches.append(entry[1])
+        if not at_least_one_match:
+            return matches
+        matches.append(temp_matches)
+        if len(temp_mismatches) >= 2:
+            todo = MergeAndSearchTools.blow_tuples_isomorphisms_list(temp_mismatches)
+        else:
+            return matches
+        return self.match_pairs_rec(todo, matches)
+
+
+    def graphs_have_isomorphisms(self, graph_list, sorted_vertices_list, graph_info_list, tuple):
+        if not graph_info_list[tuple[0]].has_duplicate_colors():
             # no graphs have duplicate colors anymore so return
             return True
 
         # get all (color, # of dubs) which occur more than once per graph, sorted to amount of dubs
-        double_colors = graph_info_list[isomorphic[0][0]].get_duplicate_colors()
+        double_colors = graph_info_list[tuple[0]].get_duplicate_colors()
 
         # find those colors within the vertex lists
-        indices = [MergeAndSearchTools.search_vertex_color(sorted_vertices_list[isomorphic[0][0]], double_colors[0][0], False)]
-        for i in range(0, len(isomorphic)):
-            indices.append(MergeAndSearchTools.search_vertex_color(sorted_vertices_list[isomorphic[i][1]], double_colors[0][0], True))
+        indices = list(MergeAndSearchTools.search_vertex_color(sorted_vertices_list[tuple[0]], double_colors[0][0], False))
+        indices.append(MergeAndSearchTools.search_vertex_color(sorted_vertices_list[tuple[1]], double_colors[0][0], True))
 
         # change the color of one dub in the first graph
-        max_color = graph_info_list[isomorphic[0][0]].max_number() + 1
-        graph_info_list[isomorphic[0][0]].swap_colors(max_color, double_colors[0][0])
-        sorted_vertices_list[isomorphic[0][0]][indices[0][0]].set_colornum(max_color)
+        max_color = graph_info_list[tuple[0]].max_number() + 1
+        graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
+        sorted_vertices_list[tuple[0]][indices[0]].set_colornum(max_color)
 
-        for i in range(0, len(indices[0])):
+        for i in range(0, len(indices[1])):
             # copy the vertices, info lists and isomorphic table to try coloring
             sorted_vertices_list_copy = copy.deepcopy(sorted_vertices_list)
             graph_info_list_copy = copy.deepcopy(graph_info_list)
 
-            # change the color of one dub in all other graphs
-            for j in range(1, len(indices)):
-                graph_info_list_copy[isomorphic[j - 1][1]].swap_colors(max_color, double_colors[0][0])
-                sorted_vertices_list_copy[isomorphic[j - 1][1]][indices[j][i]].set_colornum(max_color)
-
-            # blow up isomorphism tuples list: i.e. add (1,2) to (0,1),(0,2)
-            isomorphic_copy_blow = MergeAndSearchTools.blow_tuples_isomorphisms_all([isomorphic])
+            # change the color of one dub in the other graph
+            graph_info_list_copy[tuple[1]].swap_colors(max_color, double_colors[0][0])
+            sorted_vertices_list_copy[tuple[1]][indices[1][i]].set_colornum(max_color)
 
             # recursively color neighbors of graphs until coloring is stable again
-            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, isomorphic_copy_blow[0])
+            tuple_list = [tuple]
+            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple_list)
 
-            # deflate iso tables
-            isomorphic_copy_zip = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic_copy_blow[0])
+            if len(tuple_list) > 0:
+                return self.graphs_have_isomorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple)
+            else:
+                lol = 'lol'
 
-            for j in range(0, len(isomorphic_copy_zip)):
-                self.graphs_have_isomorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, MergeAndSearchTools.blow_tuples_isomorphisms([isomorphic_copy_zip[j]]))
-                if len(isomorphic_copy_zip[j][:]) == 0:
-                    isomorphic_copy_zip.pop(j)
-            if len(isomorphic_copy_zip) == 1 and len(isomorphic_copy_zip[0]) == 1:
-                return True
-        return False
+            return False
 
     def color_all_vertices_by_degree(self, graph_list):
         print('- Initial coloring...')

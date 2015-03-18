@@ -159,8 +159,13 @@ def blow_tuples_isomorphisms_all(zipped_tuples):
         sort_pairs(list_new[i], 0)
     return list_new
 
+def blow_tuples_isomorphisms_list(zipped_tuples):
+    list_new = []
+    for i in range(1, len(zipped_tuples)):
+        list_new.append((zipped_tuples[0], zipped_tuples[i]))
+    return list_new
 
-def blow_tuples_isomorphisms(zipped_tuples):
+def blow_tuples_isomorphisms_list_of_list(zipped_tuples):
     list_new = []
     for i in range(0, len(zipped_tuples)):
         for j in range(1, len(zipped_tuples[i])):
