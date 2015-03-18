@@ -147,11 +147,16 @@ def zip_tuple(tuple_list, a_tuple, index):
 
 
 def blow_tuples_isomorphisms_all(zipped_tuples):
+    print(zipped_tuples)
     list_new = []
     for i in range(0, len(zipped_tuples)):
+        list_new.append([(zipped_tuples[i][0][0], zipped_tuples[i][0][1])])
+        for j in range(1, len(zipped_tuples[i])):
+            list_new[i].append((zipped_tuples[i][j][0], zipped_tuples[i][j][1]))
         for j in range(0, len(zipped_tuples[i])):
             for k in range(j + 1, len(zipped_tuples[i])):
-                list_new.append((zipped_tuples[i][j], zipped_tuples[i][k]))
+                list_new[i].append((zipped_tuples[i][j][1], zipped_tuples[i][k][1]))
+        sort_pairs(list_new[i], 0)
     return list_new
 
 
@@ -285,19 +290,18 @@ def search_vertex_color(vertices, color, search_duplicates=True):
                             break
                     else:
                         break
-            if l == 0:
-                return new_vertices_old_indices
-            index = l + 1
-            while True:
-                curr_color = vertices[index].get_colornum()
-                if curr_color == color:
-                    new_vertices_old_indices.append(index)
-                    if index < len(vertices) - 1:
-                        index += 1
+            if l < len(vertices) - 1:
+                index = l + 1
+                while True:
+                    curr_color = vertices[index].get_colornum()
+                    if curr_color == color:
+                        new_vertices_old_indices.append(index)
+                        if index < len(vertices) - 1:
+                            index += 1
+                        else:
+                            break
                     else:
                         break
-                else:
-                    break
         return new_vertices_old_indices
     else:
         return []
