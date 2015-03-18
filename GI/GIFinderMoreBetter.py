@@ -11,25 +11,46 @@ Class for finding graph isomorphisms
 
 class GIFinder():
 
-    def __init__(self, num_graphs=4, num_vertices=4098, save_results=False, print_non_final_info=False):
-        self._num_graphs = num_graphs
-        self._num_vertices = num_vertices
+    def __init__(self, location, save_results=False, print_non_final_info=False):
         self._save_results = save_results
         self._print_non_final_info = print_non_final_info
+        self.read_graph(location)
+        self.graph_list_original
+
 
     def __repr__(self):
         return str(self._num_graphs) + '-' + str(self._num_vertices)
 
-    def find_isomorphisms(self):
-        print()
+    def read_graph(self, location):
         print('Finding Graph Isomorphisms between', self._num_graphs, 'graphs with', self._num_vertices, 'vertices.')
 
         # initialisation part of the algorithm which loads the graphs from a file
         print('- Loading graphs...')
         # graph_list = loadgraph('Graphs/crefBM_'
-        #
         #                    + str(self._num_graphs) + '_' + str(self._num_vertices) + '.grl', readlist=True)[0]
-        graph_list = loadgraph('Graphs/bigtrees1.grl', readlist=True)[0]
+        #'Graphs/bigtrees1.grl'
+        self.graph_list_original = loadgraph(location, readlist=True)[0]
+
+    def find_automorphisms(self):
+        graph_list = self.graph_list_original
+
+        # part I - initial coloring
+        sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
+
+        isomorphic = []
+        # adds all graphs with the same number of colors to the list of possibly isomorphic graphs
+        for i in range(0, len(graph_info_list)):
+            for j in range(i + 1, len(graph_info_list)):
+                if graph_info_list[i].num_of_colors() == graph_info_list[j].num_of_colors():
+                    isomorphic.append((i, j))
+
+        # part II - recursive coloring
+        self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list, graph_info_list, isomorphic)
+
+        return self.find_automorphisms(True)
+
+    def find_isomorphisms(self, search_auto):
+        graph_list = self.graph_list_original
 
         # part I - initial coloring
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
@@ -124,6 +145,7 @@ class GIFinder():
             if len(isomorphic_copy_zip) == 1 and len(isomorphic_copy_zip[0]) == 1:
                 return True
         return False
+
 
     def color_all_vertices_by_degree(self, graph_list):
         print('- Initial coloring...')
