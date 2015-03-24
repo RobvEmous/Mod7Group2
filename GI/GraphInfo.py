@@ -27,6 +27,9 @@ class GraphInfo():
     def graph_id(self):
         return self._graph_id
 
+    def set_graph_id(self, id):
+        self._graph_id = id
+
     def num_of_colors(self):
         return len(self._num_of_color_list)
 
@@ -94,3 +97,12 @@ class GraphInfo():
                 self._duplicate_colors = self._duplicate_colors[index:]
             self._changed = False
         return self._duplicate_colors
+
+    def get_copy(self):
+        new_graph_info = GraphInfo(self.graph_id(), self.has_converged())
+        self._changed = False
+        for entry in self._num_of_color_list:
+            new_graph_info._num_of_color_list.append(entry)
+        for entry in self._duplicate_colors:
+            new_graph_info._duplicate_colors.append(entry)
+        return new_graph_info

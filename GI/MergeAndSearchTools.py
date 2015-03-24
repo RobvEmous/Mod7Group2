@@ -29,7 +29,7 @@ def sort_pairs_number(number_list, index):
         return number_list
 
 
-# Merge sorts the list of vertices sorts to label
+# Merge sorts the list of vertices to label
 def sort_vertex_label(vertices):
     if len(vertices) > 1:
         i = int((len(vertices) / 2))
@@ -38,7 +38,7 @@ def sort_vertex_label(vertices):
         r = []
         fi = si = 0
         while fi < len(f) and si < len(s):
-            if f[fi].get_label() < s[si].get_label():
+            if f[fi].get_label() <= s[si].get_label():
                 r.append(f[fi])
                 fi += 1
             else:
@@ -62,7 +62,7 @@ def sort_vertex_color(vertices):
         r = []
         fi = si = 0
         while fi < len(f) and si < len(s):
-            if f[fi].get_colornum() < s[si].get_colornum():
+            if f[fi].get_colornum() <= s[si].get_colornum():
                 r.append(f[fi])
                 fi += 1
             else:
@@ -143,6 +143,19 @@ def zip_tuple(tuple_list, a_tuple, index):
         result += tuple_list[:(fi + 1)]
     result.append(a_tuple)
     result += tuple_list[(fi + 1):]
+    return result
+
+# Adds one item to a sorted list of nodes (to color)
+def zip_nodes(vertices_list, a_vertex):
+    result = []
+    if len(vertices_list) == 0:
+        result.append(a_vertex)
+        return result
+    fi = search_vertex_color(vertices_list, a_vertex.get_colornum(), -1)
+    if fi != -1:
+        result += vertices_list[:(fi + 1)]
+    result.append(a_vertex)
+    result += vertices_list[(fi + 1):]
     return result
 
 
@@ -269,7 +282,7 @@ def search_vertex_label(vertices, a_label):
 
 
 # Binary search for (all) color(s) within the list of vertices.
-def search_vertex_color(vertices, color, search_duplicates=True):
+def search_vertex_color_dup(vertices, color):
     l = 0
     h = len(vertices) - 1
     while h - l > 0 and vertices[l].get_colornum() != color:
@@ -282,34 +295,59 @@ def search_vertex_color(vertices, color, search_duplicates=True):
             h = m - 1
     if vertices[l].get_colornum() == color:
         new_vertices_old_indices = [l]
-        if search_duplicates:
-            if l > 0:
-                index = l - 1
-                while True:
-                    curr_color = vertices[index].get_colornum()
-                    if curr_color == color:
-                        new_vertices_old_indices.append(index)
-                        if index < len(vertices) - 1:
-                            index -= 1
-                        else:
-                            break
+        if l > 0:
+            index = l - 1
+            while True:
+                curr_color = vertices[index].get_colornum()
+                if curr_color == color:
+                    new_vertices_old_indices.append(index)
+                    if index < len(vertices) - 1:
+                        index -= 1
                     else:
                         break
-            if l < len(vertices) - 1:
-                index = l + 1
-                while True:
-                    curr_color = vertices[index].get_colornum()
-                    if curr_color == color:
-                        new_vertices_old_indices.append(index)
-                        if index < len(vertices) - 1:
-                            index += 1
-                        else:
-                            break
+                else:
+                    break
+        if l < len(vertices) - 1:
+            index = l + 1
+            while True:
+                curr_color = vertices[index].get_colornum()
+                if curr_color == color:
+                    new_vertices_old_indices.append(index)
+                    if index < len(vertices) - 1:
+                        index += 1
                     else:
                         break
+                else:
+                    break
         return new_vertices_old_indices
     else:
         return []
+
+# searches for a vertex with this color
+# Action is whether to search for equal (0), smaller or equal (-1) or bigger or equal (1)
+def search_vertex_color(vertices, color, action):
+    if len(vertices) > 0:
+        l = 0
+        h = len(vertices) - 1
+        while h - l > 0 and vertices[l].get_colornum() != color:
+            m = int((l + h) / 2)
+            if vertices[m].get_colornum() == color:
+                l = m
+            elif vertices[m].get_colornum() < color:
+                l = m + 1
+            else:
+                h = m - 1
+        if vertices[l].get_colornum() == color or (action == -1 and vertices[l].get_colornum() < color) \
+                or (action == 1 and vertices[l].get_colornum() > color):
+            return l
+        elif action == -1 and l > 0:
+            return l - 1
+        elif action == 1 and l < len(vertices) - 1:
+            return l + 1
+        else:
+            return -1
+    else:
+        return -1
 
 
 # searches for a vertex with this color and neighbors
@@ -390,3 +428,21 @@ def compare_vertex_colors(list1, list2):
         else:
             return 1
     return 0  # it are duplicates
+
+def copy_colors_all(vertices_lists):
+    colors_list = []
+    for entry in vertices_lists:
+        colors_list.append(copy_colors(entry))
+    return colors_list
+
+def copy_colors(vertices_list):
+    colors = []
+    for entry in vertices_list:
+        colors.append((entry.get_label(), entry.get_colornum()))
+    return sort_pairs(colors, 0)
+
+def copy_graph_info(graph_info_list):
+    new_list = []
+    for entry in graph_info_list:
+        new_list.append(entry.get_copy())
+    return new_list
