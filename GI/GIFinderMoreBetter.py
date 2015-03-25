@@ -1,6 +1,6 @@
 import MergeAndSearchTools
 from graphIO import writeDOT, loadgraph
-from graphinfo import GraphInfo
+from GraphInfo import GraphInfo
 from time import time
 import copy
 
@@ -31,20 +31,24 @@ class GIFinder():
         #'Graphs/bigtrees1.grl'
         self.graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
 
-    def find_automorphisms(self, graph):
+    def find_automorphisms(self):
+
+        graph_list = self.graph_list_original
 
         # part I - initial coloring (also sorts to color)
-        sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree([graph])
+        sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
+        for i in range(0,len(graph_list)):
+            graph_lists = [sorted_vertices_list[i], copy.deepcopy(sorted_vertices_list[i])]
+            graph_info_lists = [graph_info_list[i], copy.deepcopy(graph_info_list[i])]
+            graph_info_lists[1].set_graph_id(1)
+            isomorphic = [(0,1)]
 
-        graph_lists = [sorted_vertices_list[0], copy.deepcopy(sorted_vertices_list[0])]
-        graph_info_lists = [graph_info_list[0], copy.deepcopy(graph_info_list[0])]
-        graph_info_lists[1].set_graph_id(1)
+            # part II - recursive coloring
+            self.color_vertices_by_neighbor_rec(None, graph_lists, graph_info_lists, isomorphic)
 
-        # part II - recursive coloring
-        self.color_vertices_by_neighbor_rec(None, graph_lists, graph_info_lists, [(0, 1)])
-
-        # part III - find automorphisms
-        nr_of_isos = self.graphs_have_isomorphisms(None, graph_lists, graph_info_lists, (0, 1), True)
+            # part III - find automorphisms
+            nr_of_isos = self.graphs_have_isomorphisms(None, graph_lists, graph_info_lists, isomorphic[0], True)
+            print('isos ',i,' ',nr_of_isos)
 
         return nr_of_isos
 
@@ -143,7 +147,6 @@ class GIFinder():
 
     def graphs_have_isomorphisms(self, graph_list, sorted_vertices_list, graph_info_list, tuple, find_all=False):
         if not graph_info_list[tuple[0]].has_duplicate_colors():
-            # no graphs have duplicate colors anymore so return
             return 1
 
         iso_count = 0
@@ -151,58 +154,61 @@ class GIFinder():
         # get all (color, # of dubs) which occur more than once per graph, sorted to amount of dubs
         double_colors = graph_info_list[tuple[0]].get_duplicate_colors()
 
-        # find those colors within the vertex lists
-        indices = [[MergeAndSearchTools.search_vertex_color(sorted_vertices_list[tuple[0]], double_colors[0][0], 0)]]
-        indices.append(MergeAndSearchTools.search_vertex_color_dup(sorted_vertices_list[tuple[1]], double_colors[0][0]))
+        if find_all==False:
+            amount_loops=1
+        else:
+            amount_loops=len(double_colors)
 
-        # change the color of one dub in the first graph and re-sort
-        max_color = graph_info_list[tuple[0]].max_number()
-        if graph_info_list[tuple[1]].max_number() > max_color:
-            max_color = graph_info_list[tuple[1]].max_number()
-            print('success')
-        max_color += 1
+        for a in range(0, amount_loops):
+            # find those colors within the vertex lists
+            indices = [[MergeAndSearchTools.search_vertex_color(sorted_vertices_list[tuple[0]], double_colors[a][0], 0)]]
+            indices.append(MergeAndSearchTools.search_vertex_color_dup(sorted_vertices_list[tuple[1]], double_colors[a][0]))
 
-        graph_info_list[tuple[0]].set_changed(True)
-        graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
-        sorted_vertices_list[tuple[0]] = self.recolor_and_sort(sorted_vertices_list[tuple[0]], indices[0], 0, max_color)
+            # change the color of one dub in the first graph and re-sort
+            max_color = graph_info_list[tuple[0]].max_number()
+            if graph_info_list[tuple[1]].max_number() > max_color:
+                max_color = graph_info_list[tuple[1]].max_number()
+                print('success')
+            max_color += 1
 
-        for i in range(0, len(indices[1])):
-            # copy the vertices, info lists and indices to try coloring
-            #sorted_vertices_list_copy = copy.deepcopy(sorted_vertices_list)
-            color_copy_0 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[0]])
-            color_copy_1 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[1]])
-            graph_info_list_copy = MergeAndSearchTools.copy_graph_info(graph_info_list)
-            indices_copy = []
-            for entry in indices[1]:
-                indices_copy.append(entry)
+            graph_info_list[tuple[0]].set_changed(True)
+            graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
+            sorted_vertices_list[tuple[0]] = self.recolor_and_sort(sorted_vertices_list[tuple[0]], indices[0], 0, max_color)
 
-            # change the color of one dub in the other graph and re-sort
-            graph_info_list_copy[tuple[1]].set_changed(True)
-            graph_info_list_copy[tuple[1]].swap_colors(max_color, double_colors[0][0])
-            sorted_vertices_list[tuple[1]][indices_copy[i]].set_colornum(max_color)
-            sorted_vertices_list[tuple[1]] = self.recolor_and_sort(sorted_vertices_list[tuple[1]], indices_copy, i, max_color)
+            for i in range(0, len(indices[1])):
+                # copy the vertices, info lists and indices to try coloring
+                #sorted_vertices_list_copy = copy.deepcopy(sorted_vertices_list)
+                color_copy_0 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[0]])
+                color_copy_1 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[1]])
+                graph_info_list_copy = MergeAndSearchTools.copy_graph_info(graph_info_list)
+                indices_copy = []
+                for entry in indices[1]:
+                    indices_copy.append(entry)
 
-            # recursively color neighbors of graphs until coloring is stable again
-            tuple_list = [tuple]
-            sorted_vertices_list_copy = []
-            for entry in sorted_vertices_list:
-                sorted_vertices_list_copy.append(entry)
+                # change the color of one dub in the other graph and re-sort
+                graph_info_list_copy[tuple[1]].set_changed(True)
+                graph_info_list_copy[tuple[1]].swap_colors(max_color, double_colors[a][0])
+                sorted_vertices_list[tuple[1]][indices_copy[i]].set_colornum(max_color)
+                sorted_vertices_list[tuple[1]] = self.recolor_and_sort(sorted_vertices_list[tuple[1]], indices_copy, i, max_color)
 
-            max_color
-            # main step : re-color graphs
-            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple_list)
+                # recursively color neighbors of graphs until coloring is stable again
+                tuple_list = [tuple]
+                sorted_vertices_list_copy = []
+                for entry in sorted_vertices_list:
+                    sorted_vertices_list_copy.append(entry)
 
-            if len(tuple_list) > 0:
-                iso_count += self.graphs_have_isomorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple)
-                if not find_all:
-                    if iso_count >= 1:
-                        return 1
-            else:
+                # max_color
+                # main step : re-color graphs
+                self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple_list)
+
+                if len(tuple_list) > 0:
+                    iso_count += self.graphs_have_isomorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple, find_all)
+                    if not find_all:
+                        if iso_count >= 1:
+                            return 1
                 # reset colors of both graphs
                 sorted_vertices_list[tuple[0]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[0]], color_copy_0)
                 sorted_vertices_list[tuple[1]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[1]], color_copy_1)
-                print('reset max')
-        print('hard reset max')
         return iso_count
 
     def color_all_vertices_by_degree(self, graph_list):
@@ -230,8 +236,8 @@ class GIFinder():
             graph.V()[j].set_colornum(curr_deg)
             graph_info.bulk_increment_colors(curr_deg)
         graph_info.bulk_final_sort()
-        if self._save_results:
-            writeDOT(graph, ('Results/colorful_' + str(graph.get_label()) + '.dot'))
+        #if self._save_results:
+            #writeDOT(graph, ('Results/colorful_' + str(graph.get_label()) + '.dot'))
         return graph_info
 
     def color_vertices_by_neighbor_rec(self, graph_list, sorted_vertices_list, graph_info_list, isomorphic):
@@ -247,7 +253,7 @@ class GIFinder():
                 print('success 2')
         iteration_counter = 0
         converged = False
-        print('---', max_color)
+        #print('---', max_color)
         while not converged:
             for i in range(0, len(sorted_vertices_list[:])):
                 if MergeAndSearchTools.search_pairs(isomorphic, i, 0, 0) == -1 \
@@ -257,7 +263,6 @@ class GIFinder():
             #print('Iteration', iteration_counter)
             max_old = max_color
             max_color = self.color_vertices_by_neighbors(sorted_vertices_list, graph_info_list, max_color, isomorphic)
-            print(max_old, '->', max_color)
             #print('-', format((100*(graph_info_list[0].num_of_colors() / self._num_vertices)), '.2f'), '%')
             converged = True
             for i in range(0, len(sorted_vertices_list)):
@@ -316,7 +321,8 @@ class GIFinder():
                             index = MergeAndSearchTools.search_vertex_color_and_neighbors(
                                     color_and_neighbors, curr_neighbors, 0)
                         except IndexError:
-                            print('faal 1:', max_color, ', (', i, ',', j, ')', color_and_neighbors, '(', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ')')
+                            print('fail')
+                            #print('faal 1:', max_color, ', (', i, ',', j, ')', color_and_neighbors, '(', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ') ',sorted_vertices_list[i])
                         if index != -1:
                             # neighbors equal to neighbors of already seen vertex:
                             # change color to color of this vertex if necessary (could already be that color)
@@ -332,7 +338,7 @@ class GIFinder():
                         if not found:
                             # unique neighbor combination found among all graphs: hand out new color
                             max_color += 1
-                            print(max_color - 1, '->', max_color, ', (', i, ',', j, ')',  color_and_neighbors, '!= (', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ')')
+                            #print(max_color - 1, '->', max_color, ', (', i, ',', j, ')',  color_and_neighbors, '!= (', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ')')
                             graph_info_list[i].swap_colors(max_color, sorted_vertices_list[i][j].get_colornum())
                             if color_changes_within_iteration[i] is None:
                                 color_changes_within_iteration[i] = []
@@ -342,7 +348,7 @@ class GIFinder():
                                 color_and_neighbors = MergeAndSearchTools.zip_vertex_color_and_neighbors(
                                     color_and_neighbors, (max_color, curr_neighbors))
                             except IndexError:
-                                print('faal 2:', max_color, ', (', i, j, ')',  color_and_neighbors, '(', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ')')
+                                #print('faal 2:', max_color, ', (', i, j, ')',  color_and_neighbors, '(', sorted_vertices_list[i][j].get_colornum(), curr_neighbors, ')')
                                 converged[i] = False
                     else:
                         broke = True
@@ -386,17 +392,12 @@ class GIFinder():
             indices[i] -= 1
         return vertices_list
 
-def testIsoSpeed(num_of_graphs, num_of_vertices):
-    gi_finder = GIFinder('cographs1', False, True)
+def testIsoSpeed(self):
+    gi_finder = GIFinder('products72', False, True)
     t = time()
-    #x = gi_finder.find_automorphisms(gi_finder.graph_list_original[2])
-    x = gi_finder.find_isomorphisms()
+    x = gi_finder.find_automorphisms()
     print(x)
     print('>> Run time:', time() - t, 'sec.')
 
-# Test run of the 49 and 4098 vertex graphs
-#testIsoSpeed(2, 49)
-testIsoSpeed(6, 15)
-#testIsoSpeed(4, 9)
-#testIsoSpeed(4, 16)
-#testIsoSpeed(6, 15)
+
+testIsoSpeed(5)
