@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="453f8028-fb45-42ff-9ffc-efda2dd2caf7" name="Default" comment="Initiële versie van dubbles solven - lijkt nog niet te werken als meer dan 2 grafen dubbles bevatten">
+      <change type="MOVED" beforePath="C:\Users\Rob\git\Mod7Group2\GI\GraphInfo.py" afterPath="$PROJECT_DIR$/graphinfo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GIFinderMoreBetter.py" afterPath="$PROJECT_DIR$/GIFinderMoreBetter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MergeAndSearchTools.py" afterPath="$PROJECT_DIR$/MergeAndSearchTools.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Graphs/test.grl" afterPath="$PROJECT_DIR$/Graphs/test.grl" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="GI.iws" />
@@ -32,21 +34,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="graphinfo.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/graphinfo.py">
+      <file leaf-file-name="GIfinder.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GIfinder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1314" max-vertical-offset="1938">
-              <caret line="107" column="29" selection-start-line="107" selection-start-column="29" selection-end-line="107" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2305" max-vertical-offset="2907">
+              <caret line="168" column="31" selection-start-line="168" selection-start-column="31" selection-end-line="168" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GIFinderMoreBetter.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="graphinfo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/graphinfo.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2261">
+              <caret line="45" column="31" selection-start-line="45" selection-start-column="31" selection-end-line="45" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GIFinderMoreBetter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5836" max-vertical-offset="6443">
-              <caret line="361" column="35" selection-start-line="361" selection-start-column="35" selection-end-line="361" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.6320422" vertical-offset="5472" max-vertical-offset="6919">
+              <caret line="343" column="46" selection-start-line="343" selection-start-column="46" selection-end-line="343" selection-end-column="46" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -54,21 +66,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cycles175.grl" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Graphs/cycles175.grl">
+      <file leaf-file-name="test.grl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Graphs/test.grl">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.663837" vertical-offset="0" max-vertical-offset="18343">
-              <caret line="23" column="5" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="copyreg.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Program Files (x86)/Python34/Lib/copyreg.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1265" max-vertical-offset="3536">
-              <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="476">
+              <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -77,8 +79,28 @@
       <file leaf-file-name="MergeAndSearchTools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MergeAndSearchTools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="7111" max-vertical-offset="7718">
-              <caret line="446" column="29" selection-start-line="446" selection-start-column="29" selection-end-line="446" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="6982" max-vertical-offset="8279">
+              <caret line="421" column="0" selection-start-line="421" selection-start-column="0" selection-end-line="421" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cubes9.grl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Graphs/cubes9.grl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="157029">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bigtrees3.grl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Graphs/bigtrees3.grl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="15118" max-vertical-offset="15725">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -87,8 +109,8 @@
       <file leaf-file-name="basicgraphs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/basicgraphs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1881" max-vertical-offset="7497">
-              <caret line="122" column="0" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1337" max-vertical-offset="7497">
+              <caret line="117" column="24" selection-start-line="117" selection-start-column="16" selection-end-line="117" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -120,15 +142,17 @@
         <option value="$PROJECT_DIR$/GIfinder.py" />
         <option value="$PROJECT_DIR$/GraphInfo.py" />
         <option value="$PROJECT_DIR$/Graphs/test.grl" />
-        <option value="$PROJECT_DIR$/graphinfo.py" />
         <option value="$PROJECT_DIR$/MergeAndSearchTools.py" />
+        <option value="$PROJECT_DIR$/graphinfo.py" />
         <option value="$PROJECT_DIR$/GIFinderMoreBetter.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="960" />
-    <option name="height" value="1032" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -169,6 +193,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="GI" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GI" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GI" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Graphs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -483,22 +521,22 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="960" height="1032" extended-state="0" />
-    <editor active="false" />
+    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.49973616" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29478458" sideWeight="0.5016358" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29444444" sideWeight="0.4934037" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29478458" sideWeight="0.49836424" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29444444" sideWeight="0.5065963" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29880044" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14459103" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32777777" sideWeight="0.49973616" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24960423" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31111112" sideWeight="0.4970976" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37888888" sideWeight="0.4970976" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3288889" sideWeight="0.49973616" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -538,14 +576,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>355</line>
-          <option name="timeStamp" value="311" />
+          <url>file://$PROJECT_DIR$/basicgraphs.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="359" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>234</line>
-          <option name="timeStamp" value="344" />
+          <url>file://$PROJECT_DIR$/graphinfo.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="368" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -558,43 +596,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="345" />
+      <option name="time" value="369" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8789">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graphinfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="647" max-vertical-offset="3366">
-          <caret line="56" column="26" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graphIO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="402" max-vertical-offset="4131">
-          <caret line="40" column="15" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/basicgraphs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1892" max-vertical-offset="7480">
-          <caret line="121" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="391">
@@ -795,16 +801,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GIfinder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2363" max-vertical-offset="2958">
-          <caret line="168" column="31" selection-start-line="168" selection-start-column="31" selection-end-line="168" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#10#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Graphs/bigtrees1.grl">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3281">
@@ -877,42 +873,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Graphs/test.grl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
-          <caret line="7" column="21" selection-start-line="6" selection-start-column="15" selection-end-line="7" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python34/Lib/copyreg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1265" max-vertical-offset="3536">
-          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/basicgraphs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1881" max-vertical-offset="7497">
-          <caret line="122" column="0" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files (x86)/Python34/Lib/copy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.60066557" vertical-offset="2622" max-vertical-offset="5712">
           <caret line="136" column="4" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graphs/modulesD.grl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2520593" vertical-offset="0" max-vertical-offset="286909">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -925,22 +889,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/graphinfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1314" max-vertical-offset="1938">
-          <caret line="107" column="29" selection-start-line="107" selection-start-column="29" selection-end-line="107" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MergeAndSearchTools.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7111" max-vertical-offset="7718">
-          <caret line="446" column="29" selection-start-line="446" selection-start-column="29" selection-end-line="446" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Graphs/gc1_k5.grl">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34634975" vertical-offset="0" max-vertical-offset="1513">
@@ -949,21 +897,109 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5836" max-vertical-offset="6443">
-          <caret line="361" column="35" selection-start-line="361" selection-start-column="35" selection-end-line="361" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Graphs/cycles175.grl">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.663837" vertical-offset="0" max-vertical-offset="18343">
           <caret line="23" column="5" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/cubes9.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="157029">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/test.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="476">
+          <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/trees11.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1513">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/trees90.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.974315" vertical-offset="5825" max-vertical-offset="6409">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files (x86)/Python34/Lib/copyreg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32724252" vertical-offset="1265" max-vertical-offset="3536">
+          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/bigtrees3.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="15725">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/basicgraphs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1337" max-vertical-offset="7497">
+          <caret line="117" column="24" selection-start-line="117" selection-start-column="16" selection-end-line="117" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graphs/modulesD.grl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55308217" vertical-offset="0" max-vertical-offset="286909">
+          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GIfinder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2305" max-vertical-offset="2907">
+          <caret line="168" column="31" selection-start-line="168" selection-start-column="31" selection-end-line="168" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MergeAndSearchTools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6982" max-vertical-offset="8279">
+          <caret line="421" column="0" selection-start-line="421" selection-start-column="0" selection-end-line="421" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/graphinfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2261">
+          <caret line="45" column="31" selection-start-line="45" selection-start-column="31" selection-end-line="45" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6320422" vertical-offset="5472" max-vertical-offset="6919">
+          <caret line="343" column="46" selection-start-line="343" selection-start-column="46" selection-end-line="343" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

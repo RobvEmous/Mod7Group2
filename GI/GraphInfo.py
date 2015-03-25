@@ -41,7 +41,26 @@ class GraphInfo():
     def swap_colors(self, color_in, color_out):
         self.increment_num_of_a_color(color_in)
         self.decrement_num_of_a_color(color_out)
-        # print(self.__repr__(), 'swap', color_out, '->', color_in)
+
+    def set_changed(self, changed):
+        self._changed = changed
+
+    def bulk_increment_colors(self, color):
+        self._num_of_color_list.append(color)
+
+    def bulk_final_sort(self):
+        num_of_color_list_temp = MergeAndSearchTools.sort_number(self._num_of_color_list)
+        index = -1
+        last_color = -1
+        self._num_of_color_list = []
+        for entry in num_of_color_list_temp:
+            if entry == last_color:
+                self._num_of_color_list[index] = \
+                    (self._num_of_color_list[index][0], self._num_of_color_list[index][1] + 1)
+            else:
+                last_color = entry
+                index += 1
+                self._num_of_color_list.append((entry, 1))
 
     def increment_num_of_a_color(self, color):
         index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
@@ -100,9 +119,9 @@ class GraphInfo():
 
     def get_copy(self):
         new_graph_info = GraphInfo(self.graph_id(), self.has_converged())
-        self._changed = False
         for entry in self._num_of_color_list:
-            new_graph_info._num_of_color_list.append(entry)
+            new_graph_info._num_of_color_list.append((entry[0], entry[1]))
         for entry in self._duplicate_colors:
-            new_graph_info._duplicate_colors.append(entry)
+            new_graph_info._duplicate_colors.append((entry[0], entry[1]))
+        new_graph_info._changed = self._changed
         return new_graph_info

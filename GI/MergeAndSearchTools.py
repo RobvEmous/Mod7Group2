@@ -6,11 +6,35 @@ Utility class for fast sort, zip and search functions
 
 
 # Merge sorts the list of number-tuples to the first or second element (indicated by index)
+def sort_number(number_list):
+    if len(number_list) > 1:
+        i = int((len(number_list) / 2))
+        f = sort_number(number_list[:i])
+        s = sort_number(number_list[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if f[fi] <= s[si]:
+                r.append(f[fi])
+                fi += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return number_list
+
+
+# Merge sorts the list of number-tuples to the first or second element (indicated by index)
 def sort_pairs_number(number_list, index):
     if len(number_list) > 1:
         i = int((len(number_list) / 2))
-        f = sort_pairs_number(list[:i], index)
-        s = sort_pairs_number(list[i:], index)
+        f = sort_pairs_number(number_list[:i], index)
+        s = sort_pairs_number(number_list[i:], index)
         r = []
         fi = si = 0
         while fi < len(f) and si < len(s):
@@ -420,6 +444,8 @@ def compare_vertices_color_equal(l1, l2):
 # Compares colors of the two lists of vertices which should already be sorted to color
 # Tests whether they are equal (0) or the first is smaller (1) or the second is smaller (-1)
 def compare_vertex_colors(list1, list2):
+    if len(list1) != len(list2):
+        raise IndexError("problem!")
     for i in range(0, len(list1)):
         if list1[i].get_colornum() < list2[i].get_colornum():
             return -1
@@ -427,7 +453,7 @@ def compare_vertex_colors(list1, list2):
             continue
         else:
             return 1
-    return 0  # it are duplicates
+    return 0  # they are duplicates
 
 def copy_colors_all(vertices_lists):
     colors_list = []
@@ -440,6 +466,13 @@ def copy_colors(vertices_list):
     for entry in vertices_list:
         colors.append((entry.get_label(), entry.get_colornum()))
     return sort_pairs(colors, 0)
+
+def restore_colors(vertices_list, colors_list):
+    vertices_list = sort_vertex_label(vertices_list)
+    for entry_index, entry in enumerate(vertices_list):
+        entry.set_colornum(colors_list[entry_index][1])
+    vertices_list = sort_vertex_color(vertices_list)
+    return vertices_list
 
 def copy_graph_info(graph_info_list):
     new_list = []
