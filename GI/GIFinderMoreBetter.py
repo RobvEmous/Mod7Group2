@@ -2,6 +2,7 @@ import MergeAndSearchTools
 from graphIO import writeDOT, loadgraph
 from GraphInfo import GraphInfo
 from time import time
+import basicpermutationgroup
 import copy
 
 """
@@ -37,20 +38,21 @@ class GIFinder():
 
         # part I - initial coloring (also sorts to color)
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
-        for i in range(0,len(graph_list)):
-            graph_lists = [sorted_vertices_list[i], copy.deepcopy(sorted_vertices_list[i])]
+        for i in range(0,len(sorted_vertices_list)):
+            sorted_graph_lists = [sorted_vertices_list[i], copy.deepcopy(sorted_vertices_list[i])]
             graph_info_lists = [graph_info_list[i], copy.deepcopy(graph_info_list[i])]
             graph_info_lists[1].set_graph_id(1)
             isomorphic = [(0,1)]
 
             # part II - recursive coloring
-            self.color_vertices_by_neighbor_rec(None, graph_lists, graph_info_lists, isomorphic)
+            self.color_vertices_by_neighbor_rec(None, sorted_graph_lists, graph_info_lists, isomorphic)
 
             # part III - find automorphisms
-            nr_of_isos = self.graphs_have_isomorphisms(None, graph_lists, graph_info_lists, isomorphic[0], True)
-            print('isos ',i,' ',nr_of_isos)
+            done, permutations = self.graphs_count_automorphisms(None, sorted_graph_lists, graph_info_lists, isomorphic[0], list())
+            print(len(basicpermutationgroup.Orbit(permutations,0)))
+            print(len(basicpermutationgroup.Stabilizer(permutations,1)))
 
-        return nr_of_isos
+        return 0
 
     def find_isomorphisms(self):
 
@@ -144,6 +146,74 @@ class GIFinder():
         else:
             return matches
         return self.match_pairs_rec(graph_list, sorted_vertices_list, graph_info_list, todo, matches)
+
+    def graphs_count_automorphisms(self, graph_list, sorted_vertices_list, graph_info_list, tuple, automorphism_list_full, parent_trivial_vertex = True):
+        if not graph_info_list[tuple[0]].has_duplicate_colors():
+            automorphism_list = list()
+            for i in range (0, len(sorted_vertices_list[0])):
+                automorphism_list.append(sorted_vertices_list[1][i].get_label())
+            if automorphism_list != [] and automorphism_list not in automorphism_list_full:
+                automorphism_list_full.append(basicpermutationgroup.permutation(len(automorphism_list), mapping=automorphism_list))
+            return True, automorphism_list_full
+
+        # get all (color, # of dubs) which occur more than once per graph, sorted to amount of dubs
+        double_colors = graph_info_list[tuple[0]].get_duplicate_colors()
+
+        for a in range(0, len(double_colors)):
+            # find those colors within the vertex lists
+            indices = [[MergeAndSearchTools.search_vertex_color(sorted_vertices_list[tuple[0]], double_colors[a][0], 0)]]
+            indices.append(MergeAndSearchTools.search_vertex_color_dup(sorted_vertices_list[tuple[1]], double_colors[a][0]))
+
+            # change the color of one dub in the first graph and re-sort
+            max_color = graph_info_list[tuple[0]].max_number()
+            if graph_info_list[tuple[1]].max_number() > max_color:
+                max_color = graph_info_list[tuple[1]].max_number()
+            max_color += 1
+
+            graph_info_list[tuple[0]].set_changed(True)
+            graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
+            sorted_vertices_list[tuple[0]] = self.recolor_and_sort(sorted_vertices_list[tuple[0]], indices[0], 0, max_color)
+
+            for i in range(0, len(indices[1])):
+                if i == 0 and parent_trivial_vertex == True:
+                    trivial_vertex = True
+                else:
+                    trivial_vertex = False
+
+                # copy the vertices, info lists and indices to try coloring
+                #sorted_vertices_list_copy = copy.deepcopy(sorted_vertices_list)
+                color_copy_0 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[0]])
+                color_copy_1 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[1]])
+                graph_info_list_copy = MergeAndSearchTools.copy_graph_info(graph_info_list)
+                indices_copy = []
+                for entry in indices[1]:
+                    indices_copy.append(entry)
+
+                # change the color of one dub in the other graph and re-sort
+                graph_info_list_copy[tuple[1]].set_changed(True)
+                graph_info_list_copy[tuple[1]].swap_colors(max_color, double_colors[a][0])
+                sorted_vertices_list[tuple[1]][indices_copy[i]].set_colornum(max_color)
+                sorted_vertices_list[tuple[1]] = self.recolor_and_sort(sorted_vertices_list[tuple[1]], indices_copy, i, max_color)
+
+                # recursively color neighbors of graphs until coloring is stable again
+                tuple_list = [tuple]
+                sorted_vertices_list_copy = []
+                for entry in sorted_vertices_list:
+                    sorted_vertices_list_copy.append(entry)
+
+                # max_color
+                # main step : re-color graphs
+                self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple_list)
+
+                if len(tuple_list) > 0:
+                    return_to_trivial_vertex, automorphism_list_full= self.graphs_count_automorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple,automorphism_list_full)
+
+                    if return_to_trivial_vertex and not trivial_vertex:
+                        return return_to_trivial_vertex, automorphism_list_full
+
+                sorted_vertices_list[tuple[0]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[0]], color_copy_0)
+                sorted_vertices_list[tuple[1]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[1]], color_copy_1)
+        return False, automorphism_list_full
 
     def graphs_have_isomorphisms(self, graph_list, sorted_vertices_list, graph_info_list, tuple, find_all=False):
         if not graph_info_list[tuple[0]].has_duplicate_colors():
@@ -396,10 +466,9 @@ class GIFinder():
         return vertices_list
 
 def testIsoSpeed():
-    gi_finder = GIFinder('cographs1', False, True)
+    gi_finder = GIFinder('torus24', False, True)
     t = time()
     x = gi_finder.find_automorphisms()
-    print(x)
     print('>> Run time:', time() - t, 'sec.')
 
 
