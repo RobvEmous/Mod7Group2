@@ -28,6 +28,30 @@ def sort_number(number_list):
     else:
         return number_list
 
+# Merge sorts the list of number-tuples to the first or second element (indicated by index)
+def sort_tuple_list(tuple_list):
+    if len(tuple_list) > 1:
+        i = int((len(tuple_list) / 2))
+        f = sort_tuple_list(tuple_list[:i])
+        s = sort_tuple_list(tuple_list[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            #if f[fi] <= s[si]:
+            if compare_vertex_label(f[fi][1], s[si][1]) < 1:
+                r.append(f[fi])
+                fi += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return tuple_list
+
 
 # Merge sorts the list of number-tuples to the first or second element (indicated by index)
 def sort_pairs_number(number_list, index):
@@ -402,7 +426,6 @@ def search_vertex_color_and_neighbors(color_and_neighbors_list, color_and_neighb
     else:
         return -1
 
-
 # Binary search for the tuple where the first or second element (indicated by index) is equal (action == 0),
 # smaller or equal (action == -1) or bigger or equal (action == 1).
 def search_pairs(tuple_list, value, index, action):
@@ -450,6 +473,18 @@ def compare_vertex_colors(list1, list2):
         if list1[i].get_colornum() < list2[i].get_colornum():
             return -1
         elif list1[i].get_colornum() == list2[i].get_colornum():
+            continue
+        else:
+            return 1
+    return 0  # they are duplicates
+
+def compare_vertex_label(list1, list2):
+    if len(list1) != len(list2):
+        raise IndexError("problem!")
+    for i in range(0, len(list1)):
+        if list1[i].get_label() < list2[i].get_label():
+            return -1
+        elif list1[i].get_label() == list2[i].get_label():
             continue
         else:
             return 1

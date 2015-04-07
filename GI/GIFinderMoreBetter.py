@@ -2,8 +2,9 @@ import MergeAndSearchTools
 from graphIO import writeDOT, loadgraph
 from GraphInfo import GraphInfo
 from time import time
+from basicgraphs import graph
 import basicpermutationgroup
-import copy
+import copy, math
 
 """
 Class for finding graph isomorphisms
@@ -32,12 +33,30 @@ class GIFinder():
         #'Graphs/bigtrees1.grl'
         self.graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
 
+    def find_twins(self):
+        #graph_list = self.graph_list_original
+        graph_list = graph(5)
+        graph_list.addedge(graph_list[0],graph_list[1])
+        graph_list.addedge(graph_list[0],graph_list[2])
+        graph_list.addedge(graph_list[0],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[2])
+        sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree([graph_list])
+        copy_sorted_vertices_list, copy_graph_info_list = self.color_all_vertices_by_degree([graph_list])
+
+        # part I - initial coloring (also sorts to color)
+        #sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
+
+        print('True:',self.findTrueTwins(graph_list,sorted_vertices_list,graph_info_list))
+        print('False ',self.findFalseTwins(graph_list,copy_sorted_vertices_list,copy_graph_info_list))
+
     def find_automorphisms(self):
 
         graph_list = self.graph_list_original
 
         # part I - initial coloring (also sorts to color)
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
+
         for i in range(0,len(sorted_vertices_list)):
             sorted_graph_lists = [sorted_vertices_list[i], copy.deepcopy(sorted_vertices_list[i])]
             graph_info_lists = [graph_info_list[i], copy.deepcopy(graph_info_list[i])]
@@ -49,10 +68,42 @@ class GIFinder():
 
             # part III - find automorphisms
             done, permutations = self.graphs_count_automorphisms(None, sorted_graph_lists, graph_info_lists, isomorphic[0], list())
-            print(len(basicpermutationgroup.Orbit(permutations,0)))
-            print(len(basicpermutationgroup.Stabilizer(permutations,1)))
+            #print(permutations)
+
+            orb = basicpermutationgroup.Orbit(permutations,basicpermutationgroup.FindNonTrivialOrbit(permutations))
+            print(len(orb))
+            stab = basicpermutationgroup.Stabilizer(permutations,basicpermutationgroup.FindNonTrivialOrbit(permutations))
+            self.try_nontrivialorbit_rec(stab,orb,0)
 
         return 0
+
+    def try_nontrivialorbit_rec(self, stab, orbit, cntr):
+        nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
+        if nontrivorb != None:
+            print((basicpermutationgroup.Stabilizer(stab,nontrivorb), basicpermutationgroup.Orbit(stab,nontrivorb),cntr+1))
+            return self.try_nontrivialorbit_rec(basicpermutationgroup.Stabilizer(stab,nontrivorb), basicpermutationgroup.Orbit(stab,nontrivorb),cntr+1)
+        else:
+            return stab, orbit, cntr
+
+    def gcd(self, a, b):
+        while (b != 0):
+            t = b;
+            b = a % b;
+            a = t;
+        return a;
+
+
+    def lcm(self, a, b):
+        return (a * b / self.gcd(a, b))
+
+
+    def lcmm(self, args):
+        if(len(args) == 2):
+            return self.lcm(args[0], args[1])
+        else:
+            arg0 = args[0]
+            args.pop(0)
+            return self.lcm(arg0, self.lcmm(args))
 
     def find_isomorphisms(self):
 
@@ -116,6 +167,76 @@ class GIFinder():
             print('No Isomorphisms found between the graphs')
         return new_isos
 
+    def findFalseTwins(self, graph_list, sorted_vertices_list, graph_info_list):
+        nbs_tuple = list()
+        twins = list()
+        if graph_info_list[0].has_duplicate_colors():
+            double_colors = MergeAndSearchTools.sort_pairs(graph_info_list[0].get_duplicate_colors(),0)
+            index = 0
+            for i in range (0, len(sorted_vertices_list[0])):
+                if sorted_vertices_list[0][i].get_colornum() == double_colors[index][0]:
+                    for j in range (0, double_colors[index][1]):
+                        nbs_tuple.append((sorted_vertices_list[0][i],MergeAndSearchTools.sort_vertex_label(sorted_vertices_list[0][i].nbs())))
+                        i=i+1
+                    if (index == len(double_colors)-1):
+                        break
+                    else:
+                        index+=1
+            old = 0
+            for i in range(0, len(nbs_tuple)):
+                if (i < len(nbs_tuple)-1):
+                    if (nbs_tuple[i][0].get_colornum() == nbs_tuple[i+1][0].get_colornum()):
+                        if (i-old > 0):
+                            nbs_tuple[old:i] = MergeAndSearchTools.sort_tuple_list(nbs_tuple[old:i])
+                            old = i+1
+                else:
+                    if (i-old > 0):
+                        nbs_tuple[old:i] = MergeAndSearchTools.sort_tuple_list(nbs_tuple[old:i])
+            for i in range(0, len(nbs_tuple)):
+                if (i < len(nbs_tuple)-1):
+                    if (nbs_tuple[i][0].get_colornum() == nbs_tuple[i+1][0].get_colornum()):
+                        if (MergeAndSearchTools.compare_vertex_label(nbs_tuple[i][1],nbs_tuple[i+1][1])) == 0:
+                            twins.append([nbs_tuple[i][0].get_label(),nbs_tuple[i+1][0].get_label()])
+                        else:
+                            continue
+        return MergeAndSearchTools.zip_tuples_isomorphisms(twins)
+
+    def findTrueTwins(self, graph_list, sorted_vertices_list, graph_info_list):
+        nbs_tuple = list()
+        twins = list()
+        if graph_info_list[0].has_duplicate_colors():
+            double_colors = MergeAndSearchTools.sort_pairs(graph_info_list[0].get_duplicate_colors(),0)
+            index = 0
+            for i in range (0, len(sorted_vertices_list[0])):
+                if sorted_vertices_list[0][i].get_colornum() == double_colors[index][0]:
+                    for j in range (0, double_colors[index][1]):
+                        nbs = sorted_vertices_list[0][i].nbs()
+                        #nbs.append(sorted_vertices_list[0][i])
+                        nbs_tuple.append((sorted_vertices_list[0][i],MergeAndSearchTools.sort_vertex_label(nbs)))
+                        i=i+1
+                    if (index == len(double_colors)-1):
+                        break
+                    else:
+                        index+=1
+            old = 0
+            for i in range(0, len(nbs_tuple)):
+                if (i < len(nbs_tuple)-1):
+                    if (nbs_tuple[i][0].get_colornum() == nbs_tuple[i+1][0].get_colornum()):
+                        if (i-old > 0):
+                            nbs_tuple[old:i] = MergeAndSearchTools.sort_tuple_list(nbs_tuple[old:i])
+                            old = i+1
+                else:
+                    if (i-old > 0):
+                        nbs_tuple[old:i] = MergeAndSearchTools.sort_tuple_list(nbs_tuple[old:i])
+
+            for i in range(0, len(nbs_tuple)):
+                if (i < len(nbs_tuple)-1):
+                    if (nbs_tuple[i][0].get_colornum() == nbs_tuple[i+1][0].get_colornum()):
+                        if (MergeAndSearchTools.compare_vertex_label(nbs_tuple[i][1],nbs_tuple[i+1][1])) == 0:
+                            twins.append([nbs_tuple[i][0].get_label(),nbs_tuple[i+1][0].get_label()])
+
+        return MergeAndSearchTools.zip_tuples_isomorphisms(twins)
+
 
     def match_pairs_rec(self, graph_list, sorted_vertices_list, graph_info_list, todo, matches):
         at_least_one_match = False
@@ -151,10 +272,12 @@ class GIFinder():
         if not graph_info_list[tuple[0]].has_duplicate_colors():
             automorphism_list = list()
             for i in range (0, len(sorted_vertices_list[0])):
-                automorphism_list.append(sorted_vertices_list[1][i].get_label())
-            if automorphism_list != [] and automorphism_list not in automorphism_list_full:
-                automorphism_list_full.append(basicpermutationgroup.permutation(len(automorphism_list), mapping=automorphism_list))
-            return True, automorphism_list_full
+                automorphism_list.append((sorted_vertices_list[1][i].get_label()))
+            if automorphism_list != []:
+                go = True
+                Perm = basicpermutationgroup.permutation(len(automorphism_list), mapping=automorphism_list)
+                automorphism_list_full.append(Perm)
+                return True, automorphism_list_full
 
         # get all (color, # of dubs) which occur more than once per graph, sorted to amount of dubs
         double_colors = graph_info_list[tuple[0]].get_duplicate_colors()
@@ -207,7 +330,6 @@ class GIFinder():
 
                 if len(tuple_list) > 0:
                     return_to_trivial_vertex, automorphism_list_full= self.graphs_count_automorphisms(graph_list, sorted_vertices_list_copy, graph_info_list_copy, tuple,automorphism_list_full)
-
                     if return_to_trivial_vertex and not trivial_vertex:
                         return return_to_trivial_vertex, automorphism_list_full
 
