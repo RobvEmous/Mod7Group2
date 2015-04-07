@@ -525,6 +525,8 @@ def compare_vertex_colors(list1, list2):
     if len(list1) != len(list2):
         raise IndexError("problem!")
     for i in range(0, len(list1)):
+        if list1[i].get_colornum() < list2[i].get_colornum():
+            return -1
         if list1[i].get_colornum() == list2[i].get_colornum():
             continue
         else:

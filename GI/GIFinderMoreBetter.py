@@ -70,20 +70,20 @@ class GIFinder():
             done, permutations = self.graphs_count_automorphisms(None, sorted_graph_lists, graph_info_lists, isomorphic[0], list(), 0)
             #print(permutations)
 
-            orb = basicpermutationgroup.Orbit(permutations,basicpermutationgroup.FindNonTrivialOrbit(permutations))
-            print(len(orb))
-            stab = basicpermutationgroup.Stabilizer(permutations,basicpermutationgroup.FindNonTrivialOrbit(permutations))
-            self.try_nontrivialorbit_rec(stab,orb,0)
+            print(self.try_non_trivial_orbit_rec(permutations, 0))
 
         return 0
 
-    def try_nontrivialorbit_rec(self, stab, orbit, cntr):
+
+    def try_non_trivial_orbit_rec(self, stab, cntr):
         nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
         if nontrivorb != None:
-            print((basicpermutationgroup.Stabilizer(stab,nontrivorb), basicpermutationgroup.Orbit(stab,nontrivorb),cntr+1))
-            return self.try_nontrivialorbit_rec(basicpermutationgroup.Stabilizer(stab,nontrivorb), basicpermutationgroup.Orbit(stab,nontrivorb),cntr+1)
+            orb = basicpermutationgroup.Orbit(stab, nontrivorb)
+            stab = basicpermutationgroup.Stabilizer(stab, nontrivorb)
+            print(stab, orb)
+            return len(orb) * self.try_non_trivial_orbit_rec(stab, cntr+1)
         else:
-            return stab, orbit, cntr
+            return 1
 
     def gcd(self, a, b):
         while (b != 0):
@@ -306,6 +306,7 @@ class GIFinder():
             # this boolean could be true (and should be reset) from former color refinement tasks
             graph_info_list[tuple[0]].set_has_converged(False)
             graph_info_list[tuple[1]].set_has_converged(False)
+
             for i in range(0, len(indices[1])):
                 if i == 0 and parent_trivial_vertex:
                     trivial_vertex = True
@@ -344,6 +345,7 @@ class GIFinder():
 
                 sorted_vertices_list[tuple[0]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[0]], color_copy_0)
                 sorted_vertices_list[tuple[1]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[tuple[1]], color_copy_1)
+
         return False, automorphism_list_full
 
     @staticmethod
@@ -367,12 +369,13 @@ class GIFinder():
         max_color += 1
 
         # this boolean could be true (and should be reset) from former color refinement tasks
-        # graph_info_list[tuple[0]].set_has_converged(False) TODO
-        # graph_info_list[tuple[1]].set_has_converged(False)
+        graph_info_list[tuple[0]].set_has_converged(False)
+        graph_info_list[tuple[1]].set_has_converged(False)
 
         # change the color of one dub in the first graph and re-sort (wisely)
         graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
         sorted_vertices_list[tuple[0]] = self.recolor_and_sort(sorted_vertices_list[tuple[0]], indices[0], 0, max_color)
+        self.check_integrity(sorted_vertices_list[tuple[0]], graph_info_list[tuple[0]])
 
         color_copy_0 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[0]])
 
@@ -536,10 +539,10 @@ class GIFinder():
                     writeDOT(graph_list[i], ('Results/colorful_it_' + str(iteration_counter)
                                              + '_' + str(graph_list[i].get_label()) + '.dot'))
                 # sort the vertices
-                if converged:
-                    sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(sorted_vertices_list[i])
-                else:
-                    sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(sorted_vertices_list[i])
+                # if converged:
+                sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(sorted_vertices_list[i])
+                # else:
+                    # sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(sorted_vertices_list[i])
                     # sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color_and_changed(sorted_vertices_list[i]) TODO
             iteration_counter += 1
         return iteration_counter
@@ -552,7 +555,7 @@ class GIFinder():
     # Should be called iteratively until the coloring is stable (has diverged)
     @staticmethod
     def color_vertices_by_neighbors(sorted_vertices_list, graph_info_list, max_color, isomorphic):
-        changes = [None]*len(graph_info_list)
+        # changes = [None]*len(graph_info_list) TODO
 
         start_color = None
         color_and_neighbors = []  # one list shared by all graphs
@@ -565,7 +568,7 @@ class GIFinder():
         while not done:
             done = True  # if all graphs have checked all their colors this boolean will remain true
             for i in range(0, len(sorted_vertices_list)):
-                done_with_graph = False
+                # done_with_graph = False TODO
                 broke = False
                 if current_index_list[i] >= len(sorted_vertices_list[i]):
                     continue
@@ -613,9 +616,9 @@ class GIFinder():
                         break
                 # done with current color in this graph: update former and current index
                 former_index_list[i] = current_index_list[i]
-                if done_with_graph:
-                    current_index_list[i] = len(sorted_vertices_list[i])
-                elif broke:
+                # if done_with_graph:
+                    # current_index_list[i] = len(sorted_vertices_list[i])
+                if broke:
                     current_index_list[i] = j
                 else:
                     current_index_list[i] = j + 1
@@ -673,8 +676,8 @@ class GIFinder():
 
 def test_iso_speed():
     t = time()
-    gi_finder = GIFinder('modulesD', False, False, True)
-    x = gi_finder.find_isomorphisms()
+    gi_finder = GIFinder('cubes6', False, False, True)
+    x = gi_finder.find_automorphisms()
     print('>> Run time', time() - t, 'sec.')
 
 test_iso_speed()
