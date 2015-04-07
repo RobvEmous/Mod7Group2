@@ -5,10 +5,10 @@ __author__ = 'Rob'
 """
 Stores info about a currently being colored and evaluated graph (for checking isomorphisms)
     _graph_id - the id of the graph the info belongs to (the index within the list of evaluated graphs)
-    _max_degree - the highest degree (number of direct neighbors) among all vertices of the graph, this is also the highest color index after initial coloring
+    _max_number - the highest color number the info holds. A value higher than this will therefore be unique
     _num_of_colors - the number of unique colors among all colored vertices
     _has_converged - whether the coloring of this graph has converged (does not change after x iterations)
-    _has_duplicate_colors - whether the graph contains two vertices with the same color
+    _has_duplicate_colors - whether the graph contains at least two vertices with the same color
 """
 
 
@@ -38,13 +38,19 @@ class GraphInfo():
             return 0
         return self._num_of_color_list[self.num_of_colors() - 1][0]
 
+    # Adds one to the amount of color_in and decreases the amount of color_out by one.
     def swap_colors(self, color_in, color_out):
+        if color_in == color_out:
+            print('color-unchanged:', color_in)
         self.increment_num_of_a_color(color_in)
-        self.decrement_num_of_a_color(color_out)
+        if not self.decrement_num_of_a_color(color_out):
+            print('colorfail:', color_out, '->', color_in)
 
     def set_changed(self, changed):
         self._changed = changed
 
+    # When inserting a lot of colors without using the info in the meantime, use this function for increased performance.
+    # When done inserting call 'bulk_final_sort()' to be able to normally use the info class.
     def bulk_increment_colors(self, color):
         self._num_of_color_list.append(color)
 
@@ -62,6 +68,7 @@ class GraphInfo():
                 index += 1
                 self._num_of_color_list.append((entry, 1))
 
+    # Increments the amount of this color, if it was zero, it is added.
     def increment_num_of_a_color(self, color):
         index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
         if index == -1:
@@ -70,6 +77,8 @@ class GraphInfo():
             self._num_of_color_list[index] = (color, self._num_of_color_list[index][1] + 1)
         self._changed = True
 
+    # Decrements the amount of this color and if it was one, it is removed.
+    # Returns whether it was there in the first place.
     def decrement_num_of_a_color(self, color):
         index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
         if index != -1:
@@ -77,10 +86,18 @@ class GraphInfo():
                 self._num_of_color_list.remove(self._num_of_color_list[index])
             else:
                 self._num_of_color_list[index] = (color, self._num_of_color_list[index][1] - 1)
+        else:
+            return False
         self._changed = True
+        return True
 
+    # Gets the amount of a certain color
     def get_num_of_a_color(self, color):
-        index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
+        index = -1
+        try:
+            index = MergeAndSearchTools.search_pairs(self._num_of_color_list, color, 0, 0)
+        except TypeError:
+            print('hoi')
         if index != -1:
             return self._num_of_color_list[index][1]
         else:

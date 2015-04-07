@@ -27,7 +27,7 @@ class vertex():
     and an attribute <_label> which can be anything: it is not used for any methods,
     except for __repr__.
     """
-    def __init__(self,graph,label=0):
+    def __init__(self, graph, label=0):
         """
         Creates a vertex, part of <graph>, with optional label <label>.
         (Labels of different vertices may be chosen the same; this does
@@ -37,8 +37,9 @@ class vertex():
         self._graph=graph
         self._label=label
         self._colornum = 0
-        self._changed = True
-        self._sorted = False
+        self._nbs_updated = True
+        self._nbs_sorted = False
+        self._nbs_color_changed = True
         self._nbs_list = []
 
     def __repr__(self):
@@ -46,6 +47,60 @@ class vertex():
 
     def get_label(self):
         return self._label
+
+    def get_graph(self):
+        return self._graph
+
+    def colornum(self):
+        return self._colornum
+
+    def get_colornum(self):
+        return self._colornum
+
+    def set_colornumm(self, num, update_nbs):
+        self._colornum = num
+        if update_nbs:
+            for nb in self.nbs():
+                nb.set_nbs_sorted(False)
+
+    def set_colornum(self, num):
+        self.set_colornumm(num, True)
+
+    def is_nbs_color_changed(self):
+        return self._nbs_color_changed
+
+    def set_nbs_color_changed(self, is_changed):
+        self._nbs_color_changed = is_changed
+
+    def set_nbs_updated(self, is_updated):
+        self._nbs_updated = is_updated
+
+    def set_nbs_sorted(self, is_sorted):
+        self._nbs_sorted = is_sorted
+
+    def nbss(self, sort_nbs_list):
+        """
+        Returns the list of neighbors of vertex <self>.
+        In case of parallel edges: duplicates are not removed from this list!
+        It will only (re)calculate the neighbors if necessary for better performance
+        """
+        if self._nbs_updated or len(self._nbs_list) == 0:
+            for e in self.inclist():
+                self._nbs_list.append(e.otherend(self))
+            self._nbs_updated = False
+        if sort_nbs_list and not self._nbs_sorted:
+            self._nbs_list = self.merge_sort_color(self, self._nbs_list)
+            self._nbs_sorted = True
+        return self._nbs_list
+
+    def nbs(self):
+        return self.nbss(True)
+
+    def deg(self):
+        """
+        Returns the degree of vertex <self>.
+        """
+        return len(self.nbss(False))
 
     def adj(self,other):
         """
@@ -91,43 +146,6 @@ class vertex():
             else:
                 break
         return incl
-
-    def colornum(self):
-        return self._colornum
-
-    def get_colornum(self):
-        return self._colornum
-
-    def set_colornum(self, num):
-        self._colornum = num
-        for nb in self.nbs():
-            nb.set_sorted = False
-
-    def set_changed(self, changed):
-        self._changed = changed
-
-    def set_sorted(self, sorted):
-        self._sorted = sorted
-
-    def nbs(self):
-        """
-        Returns the list of neighbors of vertex <self>.
-        In case of parallel edges: duplicates are not removed from this list!
-        It will only (re)calculate the neighbors if necessary for better performance
-        """
-        if self._changed or len(self._nbs_list) == 0:
-            for e in self.inclist():
-                self._nbs_list.append(e.otherend(self))
-            self._changed = False
-        if not self._sorted:
-            self._nbs_list = self.merge_sort_color(self, self._nbs_list)
-        return self._nbs_list
-
-    def deg(self):
-        """
-        Returns the degree of vertex <self>.
-        """
-        return len(self.nbs())
 
     # Merge sorts the list of vertices sorts to color
     @staticmethod
@@ -214,7 +232,7 @@ class graph():
     """
     unsorted = False
 
-    def __init__(self,n=0,simple=False):
+    def __init__(self, n=0, simple=False):
         """
         Creates a graph.
         Optional argument <n>: number of vertices.
@@ -334,7 +352,8 @@ class graph():
             r = []
             fi = si = 0
             while fi < len(f) and si < len(s):
-                if f[fi].tail().get_label() < s[si].tail().get_label() or f[fi].tail().get_label() == s[si].tail().get_label() and f[fi].head().get_label() < s[si].head().get_label():
+                if f[fi].tail().get_label() < s[si].tail().get_label() \
+                        or f[fi].tail().get_label() == s[si].tail().get_label() and f[fi].head().get_label() <= s[si].head().get_label():
                     r.append(f[fi])
                     fi += 1
                 else:
@@ -352,7 +371,7 @@ class graph():
         self._EDouble = self.sortEdgesRec(self._EDouble)
         self.unsorted = False
 
-    # uses binary algorithm to search for (first) elements in lists containing tupels
+    # uses binary algorithm to search for (first) elements in lists containing edge tupels
     def binary_search_pairs(self, list, value):
         if len(list) > 0:
             l = 0
@@ -373,12 +392,12 @@ class graph():
             return -1
 
     def findFirstEdgeOfVertex(self, label):
-        if self.unsorted == True:
+        if self.unsorted:
             self.sortEdges()
         return self.binary_search_pairs(self._EDouble, label)
 
 
-    def findedgeRec(self, u, v, max, min):
+    def find_edge_rec(self, u, v, max, min):
         """
         If <u> and <v> are adjacent, this returns an edge between them.
         (Arbitrary in the case of multigraphs.)
@@ -407,29 +426,109 @@ class graph():
         elif i == len(e) - 1:
             return None
         elif e[i][0] < low or e[i][1] < high:
-            return self.findedgeRec(u, v, max, i)
+            return self.find_edge_rec(u, v, max, i)
         elif e[i][0] > low or e[i][1] > high:
-            return self.findedgeRec(u, v, i, min)
+            return self.find_edge_rec(u, v, i, min)
         return None
 
-    def findedge(self,u,v):
+    def find_edge(self,u,v):
         if self.unsorted == True:
             self.sortEdges()
-        return self.findedgeRec(u, v, len(self._EDouble), 0)
+        return self.find_edge_rec(u, v, len(self._EDouble), 0)
 
     def adj(self,u,v):
         """
         Returns True iff vertices <u> and <v> are adjacent.
         """
-        if self.findedge(u,v) == None:
+        if self.find_edge(u,v) == None:
             return False
         else:
             return True
 
-    def isdirected(self):
+    def is_directed(self):
         """
         Returns False, because for now these graphs are always undirected.
         """
         return self._directed
-		
 
+
+    def find_false_twinsch(self, vertices_list):
+        curr_color = -1
+        # while
+        vertices_list[0]
+
+    def find_false_twins(self):
+        checkedNodes = self.V()
+
+        if len(checkedNodes) > 2: #you need at least 3 nodes to possibly have a false twin
+            falsetwins = []
+            neighbours = []
+            i = 0
+            while i < len(checkedNodes): #for every node add its neighbours to the list
+                if len(checkedNodes[i].nbs()) > 0:
+                    neighbours.append([checkedNodes[i], checkedNodes[i].nbs()])
+                i += 1
+            j = 0
+            while j < len(neighbours):
+                q = 0
+                same = True
+                templist = []
+                z = j + 1
+                """
+                An empty neighbour list means that the node has already been added to the list with twins
+                and can be skipped
+                """
+                while z < len(neighbours) and len(neighbours[j][1]) > 0:
+                    """
+                    Nodes need the same amount of neighbours in order to be twins. If this is not the case
+                    we can skip comparing the two nodes
+                    """
+                    if len(neighbours[j][1]) == len(neighbours[z][1]):
+                        """
+                        If we checked every neighbour of the current node, check whether it had the same
+                        neighbours as the other node. If this is the case, add this node to the temporary
+                        list with false twins
+                        """
+                        if q == len(neighbours[j][1]):
+                            if same:
+                                templist.append(neighbours[z][0])
+                                neighbours[z][0] = -1
+                                neighbours[z][1] = []
+                                q = 0
+                                z += 1
+                        else:
+                            if neighbours[j][1][q] in neighbours[z][1]: #check whether the neighbour occurs in both lists
+                                same = True
+                                q += 1
+                            else:   #skip checking the current node's neighbours if the neighbour doesn't occur in both lists
+                                same = False
+                                q = 0
+                                z += 1
+                    else:
+                        z += 1
+                """
+                If the templist is empty, it means no false twins including the current node were found.
+                Otherwise the list is added to the definitive false twins list.
+                """
+                if not len(templist) == 0:
+                    templist.append(j)
+                    falsetwins.append(templist)
+                j += 1
+            return falsetwins
+        else:
+            return 0
+
+
+def get_copy(vertex_list):
+    # create copy of graph
+    new_graph = graph()
+
+    vertex_list[0].get_graph()
+    # new_graph.
+    new_vertex_list = []
+    for entry in vertex_list:
+        new_vertex = vertex(entry.get_graph(), entry.get_label())
+        new_vertex.set_V(entry.V())
+        new_vertex.set_changed(True)
+        new_vertex_list.append(new_vertex)
+    return new_vertex_list

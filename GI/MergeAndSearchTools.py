@@ -54,6 +54,31 @@ def sort_pairs_number(number_list, index):
 
 
 # Merge sorts the list of vertices to label
+def sort_vertex_label_rem_dups(vertices):
+    if len(vertices) > 1:
+        i = int((len(vertices) / 2))
+        f = sort_vertex_label_rem_dups(vertices[:i])
+        s = sort_vertex_label_rem_dups(vertices[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if f[fi].get_label() <= s[si].get_label():
+                r.append(f[fi])
+                if f[fi].get_label() == s[si].get_label():
+                    si += 1
+                fi += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return vertices
+
+# Merge sorts the list of vertices to label
 def sort_vertex_label(vertices):
     if len(vertices) > 1:
         i = int((len(vertices) / 2))
@@ -68,6 +93,36 @@ def sort_vertex_label(vertices):
             else:
                 r.append(s[si])
                 si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return vertices
+
+# Merge sorts the list of vertices sorts to color
+def sort_vertex_color_and_changed(vertices):
+    if len(vertices) > 1:
+        i = int((len(vertices) / 2))
+        f = sort_vertex_color_and_changed(vertices[:i])
+        s = sort_vertex_color_and_changed(vertices[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if f[fi].is_nbs_color_changed() and s[si].is_nbs_color_changed():
+                if f[fi].get_colornum() <= s[si].get_colornum():
+                    r.append(f[fi])
+                    fi += 1
+                else:
+                    r.append(s[si])
+                    si += 1
+            elif s[si].is_nbs_color_changed():
+                r.append(s[si])
+                si += 1
+            else:
+                r.append(f[fi])
+                fi += 1
         if fi < len(f):
             r += f[fi:]
         elif si < len(s):
@@ -447,13 +502,14 @@ def compare_vertex_colors(list1, list2):
     if len(list1) != len(list2):
         raise IndexError("problem!")
     for i in range(0, len(list1)):
-        if list1[i].get_colornum() < list2[i].get_colornum():
-            return -1
-        elif list1[i].get_colornum() == list2[i].get_colornum():
+        if list1[i].get_colornum() == list2[i].get_colornum():
             continue
+        elif list1[i].get_colornum() < list2[i].get_colornum():
+            return -1
         else:
             return 1
     return 0  # they are duplicates
+
 
 def copy_colors_all(vertices_lists):
     colors_list = []
@@ -461,11 +517,13 @@ def copy_colors_all(vertices_lists):
         colors_list.append(copy_colors(entry))
     return colors_list
 
+
 def copy_colors(vertices_list):
     colors = []
     for entry in vertices_list:
         colors.append((entry.get_label(), entry.get_colornum()))
     return sort_pairs(colors, 0)
+
 
 def restore_colors(vertices_list, colors_list):
     vertices_list = sort_vertex_label(vertices_list)
@@ -473,6 +531,7 @@ def restore_colors(vertices_list, colors_list):
         entry.set_colornum(colors_list[entry_index][1])
     vertices_list = sort_vertex_color(vertices_list)
     return vertices_list
+
 
 def copy_graph_info(graph_info_list):
     new_list = []
