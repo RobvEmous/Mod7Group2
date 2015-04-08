@@ -157,6 +157,38 @@ def sort_vertex_color_and_changed(vertices):
 
 
 # Merge sorts the list of vertices sorts to color
+def sort_vertex_color_and_nbs_to_label(vertices):
+    if len(vertices) > 1:
+        i = int((len(vertices) / 2))
+        f = sort_vertex_color_and_nbs_to_label(vertices[:i])
+        s = sort_vertex_color_and_nbs_to_label(vertices[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if f[fi].get_colornum() < s[si].get_colornum():
+                r.append(f[fi])
+                fi += 1
+            elif f[fi].get_colornum() == s[si].get_colornum():
+                comparison = compare_vertex_label(f[fi].nbs_sorted_to_label(), s[si].nbs_sorted_to_label())
+                if comparison <= 0:
+                    r.append(f[fi])
+                    fi += 1
+                else:
+                    r.append(s[si])
+                    si += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return vertices
+
+
+# Merge sorts the list of vertices sorts to color
 def sort_vertex_color(vertices):
     if len(vertices) > 1:
         i = int((len(vertices) / 2))
@@ -179,7 +211,6 @@ def sort_vertex_color(vertices):
     else:
         return vertices
 
-
 # Merge sorts the list of number-tuples to the first or second element (indicated by index)
 def sort_pairs(tuple_list, index):
     if len(tuple_list) >= 2:
@@ -190,6 +221,30 @@ def sort_pairs(tuple_list, index):
         fi = si = 0
         while fi < len(f) and si < len(s):
             if f[fi][index] < s[si][index] or f[fi][index] == s[si][index] and f[fi][index == 0] < s[si][index == 0]:
+                r.append(f[fi])
+                fi += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return tuple_list
+
+
+# Merge sorts the list of list-tuples to their length (small to big) element (indicated by index)
+def sort_pairs_to_len(tuple_list):
+    if len(tuple_list) >= 2:
+        i = int((len(tuple_list) / 2))
+        f = sort_pairs_to_len(tuple_list[:i])
+        s = sort_pairs_to_len(tuple_list[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if len(f[fi]) <= len(s[si]):
                 r.append(f[fi])
                 fi += 1
             else:
@@ -240,13 +295,14 @@ def zip_tuple(tuple_list, a_tuple, index):
     result = []
     if len(tuple_list) == 0:
         result.append(a_tuple)
-        return result
-    fi = search_pairs(tuple_list, a_tuple, index, -1)
+        return result, 0
+    fi = search_pairs(tuple_list, a_tuple[index], index, -1)
     if fi != -1:
         result += tuple_list[:(fi + 1)]
+    index = len(result)
     result.append(a_tuple)
     result += tuple_list[(fi + 1):]
-    return result
+    return result, index
 
 # Adds one item to a sorted list of nodes (to color)
 def zip_nodes(vertices_list, a_vertex):
@@ -481,6 +537,7 @@ def search_vertex_color_and_neighbors(color_and_neighbors_list, color_and_neighb
     else:
         return -1
 
+
 # Binary search for the tuple where the first or second element (indicated by index) is equal (action == 0),
 # smaller or equal (action == -1) or bigger or equal (action == 1).
 def search_pairs(tuple_list, value, index, action):
@@ -541,11 +598,20 @@ def compare_vertex_label(list1, list2):
             return -1
         elif list1[i].get_label() == list2[i].get_label():
             continue
-        elif list1[i].get_colornum() < list2[i].get_colornum():
-            return -1
         else:
             return 1
     return 0  # they are duplicates
+
+
+def compare_vertex_label_equal(list1, list2):
+    if len(list1) != len(list2):
+        raise IndexError("problem!")
+    for i in range(0, len(list1)):
+        if list1[i].get_label() == list2[i].get_label():
+            continue
+        else:
+            return 0
+    return 1  # they are duplicates
 
 
 def copy_colors_all(vertices_lists):
@@ -575,3 +641,25 @@ def copy_graph_info(graph_info_list):
     for entry in graph_info_list:
         new_list.append(entry.get_copy())
     return new_list
+
+
+def gcd( a, b):
+    while (b != 0):
+        t = b;
+        b = a % b;
+        a = t;
+    return a;
+
+
+def lcm(a, b):
+    return (a * b / gcd(a, b))
+
+
+def lcmm(args):
+    if(len(args) == 2):
+        return lcm(args[0], args[1])
+    else:
+        arg0 = args[0]
+        args.pop(0)
+        return lcm(arg0, lcmm(args))
+

@@ -1,3 +1,5 @@
+import MergeAndSearchTools
+
 """
 This is a module for working with *undirected* graphs (simple graphs or multigraphs).
 
@@ -39,8 +41,10 @@ class vertex():
         self._colornum = 0
         self._nbs_updated = True
         self._nbs_sorted = False
+        self._nbs_sorted_to_label = False
         self._nbs_color_changed = True
         self._nbs_list = []
+        self._nbs_list_label = []
 
     def __repr__(self):
         return str(self._label)
@@ -62,6 +66,7 @@ class vertex():
         if update_nbs:
             for nb in self.nbs():
                 nb.set_nbs_sorted(False)
+                nb.set_nbs_sorted_to_label(False)
 
     def set_colornum(self, num):
         self.set_colornumm(num, True)
@@ -78,6 +83,9 @@ class vertex():
     def set_nbs_sorted(self, is_sorted):
         self._nbs_sorted = is_sorted
 
+    def set_nbs_sorted_to_label(self, is_sorted):
+        self._nbs_sorted_to_label = is_sorted
+
     def nbss(self, sort_nbs_list):
         """
         Returns the list of neighbors of vertex <self>.
@@ -89,12 +97,22 @@ class vertex():
                 self._nbs_list.append(e.otherend(self))
             self._nbs_updated = False
         if sort_nbs_list and not self._nbs_sorted:
-            self._nbs_list = self.merge_sort_color(self, self._nbs_list)
+            self._nbs_list = MergeAndSearchTools.sort_vertex_color(self._nbs_list)
             self._nbs_sorted = True
         return self._nbs_list
 
     def nbs(self):
         return self.nbss(True)
+
+    def nbs_sorted_to_label(self):
+        if self._nbs_updated or len(self._nbs_list_label) == 0:
+            # this might be sorted to color
+            self._nbs_list_label = self.nbss(False)
+            self._nbs_sorted_to_label = False
+        if not self._nbs_sorted_to_label:
+            self._nbs_list_label = MergeAndSearchTools.sort_vertex_label(self._nbs_list_label)
+            self._nbs_sorted_to_label = True
+        return self._nbs_list_label
 
     def deg(self):
         """
@@ -253,6 +271,13 @@ class graph():
     def __repr__(self):
         return 'V='+str(self._V)+'\nE='+str(self._E)
 
+    def __getitem__(self,i):
+        """
+        Returns the <i>th vertex of the graph -- as given in the vertex list;
+        this is not related to the vertex labels.
+        """
+        return self._V[i]
+
     def get_label(self):
         return self._label
 
@@ -288,13 +313,6 @@ class graph():
             return self._EDouble
         else:
             return self._EDouble[:]	# return a *copy* of this list
-
-    def __getitem__(self,i):
-        """
-        Returns the <i>th vertex of the graph -- as given in the vertex list;
-        this is not related to the vertex labels.
-        """
-        return self._V[i]
 
     def set_changed(self, changed):
         if changed:
@@ -344,32 +362,110 @@ class graph():
         self._changed = True
         return e1
 
-    def sortEdgesRec(self, list):
-        if len(list) > 1:
-            i = int((len(list) / 2))
-            f = self.sortEdgesRec(list[:i])
-            s = self.sortEdgesRec(list[i:])
+    def sortEdgesRec(self, edges, index):
+        if len(edges) > 1:
+            i = int((len(edges) / 2))
+            f = self.sortEdgesRec(edges[:i], index)
+            s = self.sortEdgesRec(edges[i:], index)
             r = []
             fi = si = 0
             while fi < len(f) and si < len(s):
-                if f[fi].tail().get_label() < s[si].tail().get_label() \
-                        or f[fi].tail().get_label() == s[si].tail().get_label() and f[fi].head().get_label() <= s[si].head().get_label():
-                    r.append(f[fi])
-                    fi += 1
+                if index == 0:
+                    if f[fi].tail().get_label() < s[si].tail().get_label() \
+                            or f[fi].tail().get_label() == s[si].tail().get_label() and f[fi].head().get_label() <= s[si].head().get_label():
+                        r.append(f[fi])
+                        fi += 1
+                    else:
+                        r.append(s[si])
+                        si += 1
                 else:
-                    r.append(s[si])
-                    si += 1
+                    if f[fi].head().get_label() < s[si].head().get_label() \
+                            or f[fi].head().get_label() == s[si].head().get_label() and f[fi].tail().get_label() <= s[si].tail().get_label():
+                        r.append(f[fi])
+                        fi += 1
+                    else:
+                        r.append(s[si])
+                        si += 1
             if fi < len(f):
                 r += f[fi:]
             elif si < len(s):
                 r += s[si:]
             return r
         else:
-            return list
+            return edges
 
     def sortEdges(self):
-        self._EDouble = self.sortEdgesRec(self._EDouble)
+        self._EDouble = self.sortEdgesRec(self._EDouble, 0)
         self.unsorted = False
+
+    def expand_edges(self): # TODO verify
+        self._EDouble = [None] * len(self._E)
+        self._EDouble.extend(self._E)
+        for index, entry in enumerate(self._E):
+            self._EDouble[index] = edge(entry.head(), entry.tail())
+        self._EDouble = self.sortEdgesRec(self._EDouble, 0)
+        self.unsorted = False
+
+    def update_edges(self, to_be_removed, graph_info_list_item):
+        # sort to first element
+        self._E = self.sortEdgesRec(self._E, 0)
+
+        for entry in to_be_removed:
+            # remove vertex
+            if entry.get_label() == 37:
+                pass
+            graph_info_list_item.decrement_num_of_a_color(entry.colornum()) # should not be forgotten
+            self._V.remove(entry)
+
+
+            # search an edge left-wise
+            index = self.binary_search_pairs(self._E, entry.get_label())
+            if index != -1:
+                first_index = index
+                # search first
+                while first_index > 0:
+                    if self._E[first_index - 1].tail().get_label() == entry.get_label():
+                        first_index -= 1
+                    else:
+                        break
+                # search last
+                last_index = index
+                while last_index < len(self._E):
+                    if self._E[last_index].tail().get_label() == entry.get_label():
+                        last_index += 1
+                    else:
+                        break
+                # remove edges
+                del self._E[first_index:last_index]
+
+        # re-sort to second element
+        self._E = self.sortEdgesRec(self._E, 1)
+
+        for entry in to_be_removed:
+
+            # search an edge right-wise
+            index = self.binary_search_pairs_reverse(self._E, entry.get_label())
+            if index != -1:
+                first_index = index
+                # search first
+                while first_index > 0:
+                    if self._E[first_index - 1].head().get_label() == entry.get_label():
+                        first_index -= 1
+                    else:
+                        break
+                # search last
+                last_index = index
+                while last_index < len(self._E):
+                    if self._E[last_index].head().get_label() == entry.get_label() :
+                        last_index += 1
+                    else:
+                        break
+                # remove edges
+                del self._E[first_index:last_index]
+
+        # finally expand _E to _EDouble
+        self.expand_edges()
+
 
     # uses binary algorithm to search for (first) elements in lists containing edge tupels
     def binary_search_pairs(self, list, value):
@@ -385,6 +481,26 @@ class graph():
                 else:
                     h = m - 1
             if list[l].tail().get_label() == value:
+                return l
+            else:
+                return -1
+        else:
+            return -1
+
+    # uses binary algorithm to search for (first) elements in lists containing edge tupels
+    def binary_search_pairs_reverse(self, list, value):
+        if len(list) > 0:
+            l = 0
+            h = len(list) - 1
+            while h - l > 0 and list[l].head().get_label() != value:
+                m = int((l + h) / 2)
+                if list[m].head().get_label() == value:
+                    l = m
+                elif list[m].head().get_label() < value:
+                    l = m + 1
+                else:
+                    h = m - 1
+            if list[l].head().get_label() == value:
                 return l
             else:
                 return -1
@@ -450,73 +566,6 @@ class graph():
         Returns False, because for now these graphs are always undirected.
         """
         return self._directed
-
-
-    def find_false_twinsch(self, vertices_list):
-        curr_color = -1
-        # while
-        vertices_list[0]
-
-    def find_false_twins(self):
-        checkedNodes = self.V()
-
-        if len(checkedNodes) > 2: #you need at least 3 nodes to possibly have a false twin
-            falsetwins = []
-            neighbours = []
-            i = 0
-            while i < len(checkedNodes): #for every node add its neighbours to the list
-                if len(checkedNodes[i].nbs()) > 0:
-                    neighbours.append([checkedNodes[i], checkedNodes[i].nbs()])
-                i += 1
-            j = 0
-            while j < len(neighbours):
-                q = 0
-                same = True
-                templist = []
-                z = j + 1
-                """
-                An empty neighbour list means that the node has already been added to the list with twins
-                and can be skipped
-                """
-                while z < len(neighbours) and len(neighbours[j][1]) > 0:
-                    """
-                    Nodes need the same amount of neighbours in order to be twins. If this is not the case
-                    we can skip comparing the two nodes
-                    """
-                    if len(neighbours[j][1]) == len(neighbours[z][1]):
-                        """
-                        If we checked every neighbour of the current node, check whether it had the same
-                        neighbours as the other node. If this is the case, add this node to the temporary
-                        list with false twins
-                        """
-                        if q == len(neighbours[j][1]):
-                            if same:
-                                templist.append(neighbours[z][0])
-                                neighbours[z][0] = -1
-                                neighbours[z][1] = []
-                                q = 0
-                                z += 1
-                        else:
-                            if neighbours[j][1][q] in neighbours[z][1]: #check whether the neighbour occurs in both lists
-                                same = True
-                                q += 1
-                            else:   #skip checking the current node's neighbours if the neighbour doesn't occur in both lists
-                                same = False
-                                q = 0
-                                z += 1
-                    else:
-                        z += 1
-                """
-                If the templist is empty, it means no false twins including the current node were found.
-                Otherwise the list is added to the definitive false twins list.
-                """
-                if not len(templist) == 0:
-                    templist.append(j)
-                    falsetwins.append(templist)
-                j += 1
-            return falsetwins
-        else:
-            return 0
 
 
 def get_copy(vertex_list):

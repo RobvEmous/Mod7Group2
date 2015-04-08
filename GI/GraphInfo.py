@@ -44,7 +44,7 @@ class GraphInfo():
             print('color-unchanged:', color_in)
         self.increment_num_of_a_color(color_in)
         if not self.decrement_num_of_a_color(color_out):
-            print('colorfail:', color_out, '->', color_in)
+            print('colorfail:', self._graph_id, color_out, '->', color_in)
 
     def set_changed(self, changed):
         self._changed = changed
