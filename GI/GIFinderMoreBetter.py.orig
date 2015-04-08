@@ -34,6 +34,7 @@ class GIFinder():
         self._graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
 
     def find_twins(self):
+<<<<<<< HEAD
         graph_list = self._graph_list_original
         # graph_list = graph(5)
         # graph_list.addedge(graph_list[0],graph_list[1])
@@ -43,6 +44,17 @@ class GIFinder():
         # graph_list.addedge(graph_list[1],graph_list[2])
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
         #copy_sorted_vertices_list, copy_graph_info_list = self.color_all_vertices_by_degree([graph_list])
+=======
+        graph_list = self.graph_list_original
+        graph_list = graph(5)
+        graph_list.addedge(graph_list[0],graph_list[1])
+        graph_list.addedge(graph_list[0],graph_list[2])
+        graph_list.addedge(graph_list[0],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[2])
+        sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree([graph_list])
+        copy_sorted_vertices_list, copy_graph_info_list = self.color_all_vertices_by_degree([graph_list])
+>>>>>>> 32c0de8976bcac1daa9b716f1ce50026ba665d91
 
         # part I - initial coloring (also sorts to color)
         # sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
@@ -136,7 +148,20 @@ class GIFinder():
                 print([i],' ',counter)
         return 0
 
-            print(stab, orb)
+<<<<<<< HEAD
+=======
+
+    def try_non_trivial_orbit_rec(self, stab, cntr):
+        nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
+        if nontrivorb != None:
+            orb = basicpermutationgroup.Orbit(stab, nontrivorb)
+            stab = basicpermutationgroup.Stabilizer(stab, nontrivorb)
+            #print(stab, orb)
+            return len(orb) * self.try_non_trivial_orbit_rec(stab, cntr+1)
+        else:
+            return 1
+
+>>>>>>> 32c0de8976bcac1daa9b716f1ce50026ba665d91
     def find_isomorphisms(self):
 
         graph_list = self._graph_list_original
@@ -400,8 +425,13 @@ class GIFinder():
     def graphs_count_automorphisms_fast(self, graph_list, sorted_vertices_list, graph_info_list, tuple, automorphism_list_full, depth, parent_trivial_vertex):
         if not graph_info_list[tuple[1]].has_duplicate_colors():
             automorphism_list = []
+<<<<<<< HEAD
+            for i in range(0, len(sorted_vertices_list[0])):
+                automorphism_list.append((sorted_vertices_list[0][i].get_label()))
+=======
             for i in range(0, len(sorted_vertices_list[tuple[1]])):
                 automorphism_list.append((sorted_vertices_list[tuple[1]][i].get_label()))
+>>>>>>> 32c0de8976bcac1daa9b716f1ce50026ba665d91
             if len(automorphism_list) > 0 and automorphism_list not in automorphism_list_full:
                 automorphism_list_full.append(basicpermutationgroup.permutation(len(automorphism_list), mapping=automorphism_list))
                 return True, automorphism_list_full
@@ -875,8 +905,13 @@ class GIFinder():
 
 def test_iso_speed():
     t = time()
+<<<<<<< HEAD
     gi_finder = GIFinder('cographs1', True, False, True)
     x = gi_finder.find_isomorphisms() # find_isomorphisms()
+=======
+    gi_finder = GIFinder('torus24', False, False, True)
+    x = gi_finder.find_automorphisms(False)
+>>>>>>> 32c0de8976bcac1daa9b716f1ce50026ba665d91
     print('>> Run time', time() - t, 'sec.')
 
 test_iso_speed()
