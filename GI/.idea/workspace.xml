@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="453f8028-fb45-42ff-9ffc-efda2dd2caf7" name="Default" comment="Initiële versie van dubbles solven - lijkt nog niet te werken als meer dan 2 grafen dubbles bevatten">
-      <change type="DELETED" beforePath="C:\Users\Rob\git\Mod7Group2\GI\GIFinderMoreBetter.py.orig" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GIFinderMoreBetter.py" afterPath="$PROJECT_DIR$/GIFinderMoreBetter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MergeAndSearchTools.py" afterPath="$PROJECT_DIR$/MergeAndSearchTools.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="453f8028-fb45-42ff-9ffc-efda2dd2caf7" name="Default" comment="Initiële versie van dubbles solven - lijkt nog niet te werken als meer dan 2 grafen dubbles bevatten" />
     <ignored path="GI.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,8 +41,8 @@
       <file leaf-file-name="GIFinderMoreBetter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.0362474" vertical-offset="16259" max-vertical-offset="16932">
-              <caret line="985" column="46" selection-start-line="985" selection-start-column="46" selection-end-line="985" selection-end-column="46" />
+            <state vertical-scroll-proportion="0.6226013" vertical-offset="5658" max-vertical-offset="17340">
+              <caret line="350" column="79" selection-start-line="350" selection-start-column="79" selection-end-line="350" selection-end-column="79" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -98,9 +93,12 @@
       <file leaf-file-name="MergeAndSearchTools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MergeAndSearchTools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-89.67647" vertical-offset="2595" max-vertical-offset="11798">
-              <caret line="332" column="0" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="-89.67647" vertical-offset="3241" max-vertical-offset="12444">
+              <caret line="370" column="0" selection-start-line="370" selection-start-column="0" selection-end-line="370" selection-end-column="0" />
+              <folding>
+                <marker date="1428501210799" expanded="true" signature="4739:5698" placeholder="..." />
+                <marker date="1428501210799" expanded="true" signature="18000:18750" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -530,7 +528,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.49973616" order="6" side_tool="false" content_ui="tabs" />
@@ -538,7 +536,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.49973616" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39" sideWeight="0.83271766" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39" sideWeight="0.83271766" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15672824" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36444443" sideWeight="0.49920845" order="1" side_tool="false" content_ui="tabs" />
@@ -595,12 +593,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>482</line>
+          <line>493</line>
           <option name="timeStamp" value="496" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>389</line>
+          <line>400</line>
           <option name="timeStamp" value="503" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -610,32 +608,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>629</line>
+          <line>640</line>
           <option name="timeStamp" value="564" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>659</line>
+          <line>670</line>
           <option name="timeStamp" value="566" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>702</line>
+          <line>713</line>
           <option name="timeStamp" value="567" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>80</line>
+          <line>79</line>
           <option name="timeStamp" value="568" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>193</line>
+          <line>188</line>
           <option name="timeStamp" value="570" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>444</line>
+          <line>455</line>
           <option name="timeStamp" value="574" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -645,12 +643,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GIFinderMoreBetter.py</url>
-          <line>318</line>
+          <line>329</line>
           <option name="timeStamp" value="577" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/MergeAndSearchTools.py</url>
-          <line>323</line>
+          <line>361</line>
           <option name="timeStamp" value="578" />
         </line-breakpoint>
       </breakpoints>
@@ -699,7 +697,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="8630" max-vertical-offset="11407">
           <caret line="517" column="0" selection-start-line="517" selection-start-column="0" selection-end-line="517" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1428501210799" expanded="true" signature="4739:5698" placeholder="..." />
+            <marker date="1428501210799" expanded="true" signature="18000:18750" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -891,16 +892,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MergeAndSearchTools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-89.67647" vertical-offset="2595" max-vertical-offset="11798">
-          <caret line="332" column="0" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="-89.67647" vertical-offset="3241" max-vertical-offset="12444">
+          <caret line="370" column="0" selection-start-line="370" selection-start-column="0" selection-end-line="370" selection-end-column="0" />
+          <folding>
+            <marker date="1428501210799" expanded="true" signature="4739:5698" placeholder="..." />
+            <marker date="1428501210799" expanded="true" signature="18000:18750" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GIFinderMoreBetter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0362474" vertical-offset="16259" max-vertical-offset="16932">
-          <caret line="985" column="46" selection-start-line="985" selection-start-column="46" selection-end-line="985" selection-end-column="46" />
+        <state vertical-scroll-proportion="0.6226013" vertical-offset="5658" max-vertical-offset="17340">
+          <caret line="350" column="79" selection-start-line="350" selection-start-column="79" selection-end-line="350" selection-end-column="79" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
