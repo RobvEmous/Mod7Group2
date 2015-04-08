@@ -304,6 +304,7 @@ def zip_tuple(tuple_list, a_tuple, index):
     result += tuple_list[(fi + 1):]
     return result, index
 
+
 # Adds one item to a sorted list of nodes (to color)
 def zip_nodes(vertices_list, a_vertex):
     result = []
@@ -311,6 +312,20 @@ def zip_nodes(vertices_list, a_vertex):
         result.append(a_vertex)
         return result
     fi = search_vertex_color(vertices_list, a_vertex.get_colornum(), -1)
+    if fi != -1:
+        result += vertices_list[:(fi + 1)]
+    result.append(a_vertex)
+    result += vertices_list[(fi + 1):]
+    return result
+
+
+# Adds one item to a sorted list of nodes (to label)
+def zip_nodes_label(vertices_list, a_vertex):
+    result = []
+    if len(vertices_list) == 0:
+        result.append(a_vertex)
+        return result
+    fi = search_vertex_color(vertices_list, a_vertex.get_label(), -1)
     if fi != -1:
         result += vertices_list[:(fi + 1)]
     result.append(a_vertex)

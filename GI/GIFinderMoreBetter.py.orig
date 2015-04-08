@@ -57,8 +57,7 @@ class GIFinder():
         # sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
 
         if graph_info_list[0].has_duplicate_colors():
-            print(self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
-            print(self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
+            print('False ', self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
 
     def try_non_trivial_orbit_rec(self, stab, cntr):
         nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
@@ -127,11 +126,7 @@ class GIFinder():
         automorphisms = [1]*len(graph_list)
         if self._pre_process:
             # part I.2 pre-processing: twins
-            if graph_info_list[0].has_duplicate_colors():
-                automorphisms = self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list)
-                automorphisms2 = self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list)
-                for i in range(0, len(automorphisms)):
-                    automorphisms[i] *= automorphisms2[i]
+            automorphisms = self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list)
 
         # vertex_copy =
 
@@ -949,6 +944,8 @@ class GIFinder():
         return max_color
 
     def recolor_and_sort(self, vertices_list, indices, vertex_index, new_color):
+        if len(indices) > 1 and indices[0] > indices[1]:
+            pass
         vertex = vertices_list.pop(indices[vertex_index][1])
         vertex.set_colornum(new_color)
         vertices_list = MergeAndSearchTools.zip_nodes(vertices_list, vertex)
@@ -988,8 +985,13 @@ def test_iso_speed():
     # print('>> Run time', time() - t, 'sec.')
 
     t = time()
-    gi_finder = GIFinder('bigtrees3', True, False, True) # 'falsetwins_2_17'
-    x = gi_finder.find_isomorphisms()
+<<<<<<< HEAD
+    gi_finder = GIFinder('wheeljoin14', True, False, True) # 'falsetwins_2_17'
+    x = gi_finder.find_isomorphisms() # find_isomorphisms()
+=======
+    gi_finder = GIFinder('cographs1', True, False, True)
+    x = gi_finder.find_twins() # find_isomorphisms()
+>>>>>>> b32e4cec484b5ce96a3c33d6753a52b33531ad89
     print('>> Run time', time() - t, 'sec.')
 
 test_iso_speed()
