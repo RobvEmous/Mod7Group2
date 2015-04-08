@@ -34,13 +34,14 @@ class GIFinder():
         self._graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
 
     def find_twins(self):
-        graph_list = self._graph_list_original
-        # graph_list = graph(5)
-        # graph_list.addedge(graph_list[0],graph_list[1])
-        # graph_list.addedge(graph_list[0],graph_list[2])
-        # graph_list.addedge(graph_list[0],graph_list[3])
-        # graph_list.addedge(graph_list[1],graph_list[3])
-        # graph_list.addedge(graph_list[1],graph_list[2])
+        #graph_list = self._graph_list_original
+        graph_list = graph(5)
+        graph_list.addedge(graph_list[0],graph_list[1])
+        graph_list.addedge(graph_list[0],graph_list[2])
+        graph_list.addedge(graph_list[0],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[3])
+        graph_list.addedge(graph_list[1],graph_list[2])
+        graph_list = [graph_list]
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
         #copy_sorted_vertices_list, copy_graph_info_list = self.color_all_vertices_by_degree([graph_list])
 
@@ -48,7 +49,7 @@ class GIFinder():
         # sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
 
         if graph_info_list[0].has_duplicate_colors():
-            print('False ', self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
+            print('False ', self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
 
     def try_non_trivial_orbit_rec(self, stab, cntr):
         nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
@@ -136,7 +137,6 @@ class GIFinder():
                 print([i],' ',counter)
         return 0
 
-            print(stab, orb)
     def find_isomorphisms(self):
 
         graph_list = self._graph_list_original
@@ -271,6 +271,98 @@ class GIFinder():
                     automorphisms *= self.factorial(len(curr_color_nbs_twins))
                 curr_color_nbs_twins = [sorted_vertices_list_item[i]]
                 curr_nbs = sorted_vertices_list_item[i].nbs_sorted_to_label()
+                # if we were inside color list save this
+                if len(curr_color_twins) > 0:
+                    twins.append(curr_color_twins)
+                curr_color_twins = []
+                curr_color = sorted_vertices_list_item[i].colornum()
+        # if we were inside nbs list save this
+        if len(curr_color_nbs_twins) > 1:
+            curr_color_twins.append(curr_color_nbs_twins)
+            twins_to_be_removed.extend(curr_color_nbs_twins[1:])
+            automorphisms *= self.factorial(len(curr_color_nbs_twins))
+        # if we were inside color list save this
+        if len(curr_color_twins) > 0:
+            twins.append(curr_color_twins)
+        return twins, MergeAndSearchTools.sort_vertex_label_rem_dups(twins_to_be_removed), automorphisms
+
+    def find_true_twins_rec(self, graph_list, sorted_vertices_list, graph_info_list):
+        stable = False
+        all_automorphisms = [1]*len(sorted_vertices_list)
+        non_iso_graphs = []
+        # it might be that it is always stable after one (two) iterations
+        while not stable:
+            stable = True
+            # get twins of every graph
+            all_twins = []
+            twins_to_be_removed = []
+            for index, entry in enumerate(sorted_vertices_list):
+                twins, remove, automorphisms = self.find_true_twins(entry, graph_info_list[index])
+                print(index, automorphisms, twins)
+                all_twins.append(twins)
+                all_automorphisms[index] *= automorphisms
+                twins_to_be_removed.append(remove)
+                if len(twins) > 0:
+                    stable = False
+            if stable:
+                break
+            # compare twin lists if more than one graph
+            if len(all_twins) > 1:
+                for i in range(0, len(all_twins)):
+                    for j in range(i + 1, len(all_twins)):
+                        # naïve, but fast: compare only automorphisms
+                        if len(all_twins[i]) != len(all_twins[j]):
+                            non_iso_graphs.append((i, j))
+            # get max color
+            max_color = graph_info_list[0].max_number()
+            for i in range(1, len(graph_info_list)):
+                if graph_info_list[i].max_number() > max_color:
+                    max_color = graph_info_list[i].max_number()
+            # remove twins from graphs
+            self.remove_twins_from_graph_and_color(graph_list, sorted_vertices_list, graph_info_list, all_twins, twins_to_be_removed, max_color)
+        return all_automorphisms
+
+    # a twin cannot be a twin on its own
+    def find_true_twins(self, sorted_vertices_list_item, graph_info_list_item):
+        # first sort vertices_list_item to the labels of the neighbors of the nodes <- difficult!
+        sorted_vertices_list_item = MergeAndSearchTools.sort_vertex_color_and_nbs_to_label(sorted_vertices_list_item)
+        automorphisms = 1
+        twins_to_be_removed = []
+        twins = []
+        curr_color_twins = []
+        curr_color_nbs_twins = [sorted_vertices_list_item[0]]
+        curr_color = sorted_vertices_list_item[0].colornum()
+
+        curr_nbs = sorted_vertices_list_item[0].nbs_sorted_to_label()
+        index0 = MergeAndSearchTools.zip_nodes_label(curr_nbs, sorted_vertices_list_item[0])
+        #curr_nbs.append(sorted_vertices_list_item[0].get_label())
+        #MergeAndSearchTools.sort_number(curr_nbs)
+
+        for i in range(1, len(sorted_vertices_list_item)):
+            if curr_color == sorted_vertices_list_item[i].colornum():
+                comp_nodes = sorted_vertices_list_item[i].nbs_sorted_to_label()
+                index1 = MergeAndSearchTools.zip_nodes_label(comp_nodes, sorted_vertices_list_item[i])
+                if MergeAndSearchTools.compare_vertex_label_equal(curr_nbs, comp_nodes):
+                    curr_color_nbs_twins.append(sorted_vertices_list_item[i])
+                else:
+                    if len(curr_color_nbs_twins) > 1:
+                        curr_color_twins.append(curr_color_nbs_twins)
+                        # first will not be removed, but we the only one left
+                        twins_to_be_removed.extend(curr_color_nbs_twins[1:])
+                        # update automorphisms
+                        automorphisms *= self.factorial(len(curr_color_nbs_twins))
+                    curr_color_nbs_twins = [sorted_vertices_list_item[i]]
+                    curr_nbs = sorted_vertices_list_item[i].nbs_sorted_to_label()
+
+            else:
+                # if we were inside nbs list save this
+                if len(curr_color_nbs_twins) > 1:
+                    curr_color_twins.append(curr_color_nbs_twins)
+                    twins_to_be_removed.extend(curr_color_nbs_twins[1:])
+                    automorphisms *= self.factorial(len(curr_color_nbs_twins))
+                curr_color_nbs_twins = [sorted_vertices_list_item[i]]
+                curr_nbs = sorted_vertices_list_item[i].nbs_sorted_to_label()
+                index1 = MergeAndSearchTools.zip_nodes_label(curr_nbs, sorted_vertices_list_item[i])
                 # if we were inside color list save this
                 if len(curr_color_twins) > 0:
                     twins.append(curr_color_twins)
@@ -876,7 +968,7 @@ class GIFinder():
 def test_iso_speed():
     t = time()
     gi_finder = GIFinder('cographs1', True, False, True)
-    x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    x = gi_finder.find_twins() # find_isomorphisms()
     print('>> Run time', time() - t, 'sec.')
 
 test_iso_speed()
