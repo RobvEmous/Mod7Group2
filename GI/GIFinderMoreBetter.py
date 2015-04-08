@@ -43,7 +43,7 @@ class GIFinder():
 
     def find_twins(self):
         #graph_list = self._graph_list_original
-        graph_list = graph(5)
+        graph_list = graph(4)
         graph_list.addedge(graph_list[0],graph_list[1])
         graph_list.addedge(graph_list[0],graph_list[2])
         graph_list.addedge(graph_list[0],graph_list[3])
@@ -57,8 +57,8 @@ class GIFinder():
         # sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
 
         if graph_info_list[0].has_duplicate_colors():
-            print(self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
-            print(self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
+            #print('false: ',self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
+            print('true: ',self.find_true_twins_rec(graph_list, sorted_vertices_list, graph_info_list))
 
     def try_non_trivial_orbit_rec(self, stab, cntr):
         nontrivorb = basicpermutationgroup.FindNonTrivialOrbit(stab)
@@ -315,11 +315,21 @@ class GIFinder():
                 if graph_info_list[i].max_number() > max_color:
                     max_color = graph_info_list[i].max_number()
             # remove twins from graphs
+                        # remove twins from graphs
+            print('max_color:', max_color)
+            print('twins:', all_twins)
+            print('remove:', twins_to_be_removed)
             self.remove_twins_from_graph_and_color(graph_list, sorted_vertices_list, graph_info_list, all_twins, twins_to_be_removed, max_color)
+        print('vertices: ',sorted_vertices_list)
         return all_automorphisms
 
     # a twin cannot be a twin on its own
     def find_true_twins(self, sorted_vertices_list_item, graph_info_list_item):
+        # add each node to is own nbs list
+
+        for entry in sorted_vertices_list_item:
+            MergeAndSearchTools.zip_nodes_label(entry.nbs_sorted_to_label(), entry)
+
         # first sort vertices_list_item to the labels of the neighbors of the nodes <- difficult!
         sorted_vertices_list_item = MergeAndSearchTools.sort_vertex_color_and_nbs_to_label(sorted_vertices_list_item)
         automorphisms = 1
@@ -330,12 +340,16 @@ class GIFinder():
         curr_color = sorted_vertices_list_item[0].colornum()
 
         curr_nbs = sorted_vertices_list_item[0].nbs_sorted_to_label()
+<<<<<<< HEAD
         index0 = MergeAndSearchTools.zip_nodes_label(curr_nbs, sorted_vertices_list_item[0])
 
+=======
+        MergeAndSearchTools.zip_nodes_label(curr_nbs, sorted_vertices_list_item[0])
+>>>>>>> d1b24cc73b0db89e63f96a5b1f508579e0bd8095
         for i in range(1, len(sorted_vertices_list_item)):
             if curr_color == sorted_vertices_list_item[i].colornum():
                 comp_nodes = sorted_vertices_list_item[i].nbs_sorted_to_label()
-                index1 = MergeAndSearchTools.zip_nodes_label(comp_nodes, sorted_vertices_list_item[i])
+                MergeAndSearchTools.zip_nodes_label(comp_nodes, sorted_vertices_list_item[i])
                 if MergeAndSearchTools.compare_vertex_label_equal(curr_nbs, comp_nodes):
                     curr_color_nbs_twins.append(sorted_vertices_list_item[i])
                 else:
@@ -370,6 +384,8 @@ class GIFinder():
         # if we were inside color list save this
         if len(curr_color_twins) > 0:
             twins.append(curr_color_twins)
+        for entry in sorted_vertices_list_item:
+            entry.nbs_sorted_to_label().pop(MergeAndSearchTools.search_vertex_label(entry.nbs_sorted_to_label(),entry.get_label()))
         return twins, MergeAndSearchTools.sort_vertex_label_rem_dups(twins_to_be_removed), automorphisms
 
     def factorial(self, value):
@@ -987,4 +1003,12 @@ def test_iso_speed():
     # x = gi_finder.find_isomorphisms() # find_isomorphisms()
     # print('>> Run time', time() - t, 'sec.')
 
+<<<<<<< HEAD
+=======
+    t = time()
+    gi_finder = GIFinder('bigtrees3', True, False, True) # 'falsetwins_2_17'
+    x = gi_finder.find_twins()
+    print('>> Run time', time() - t, 'sec.')
+
+>>>>>>> d1b24cc73b0db89e63f96a5b1f508579e0bd8095
 test_iso_speed()
