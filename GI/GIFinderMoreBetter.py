@@ -17,6 +17,7 @@ class GIFinder():
     def __init__(self, location, pre_process, save_results=False, print_non_final_info=False):
         self._save_results = save_results
         self._print_non_final_info = print_non_final_info
+        self._location = None
         self.read_graph(location)
         self._pre_process = pre_process
 
@@ -31,7 +32,14 @@ class GIFinder():
         # graph_list = loadgraph('Graphs/crefBM_'
         #                    + str(self._num_graphs) + '_' + str(self._num_vertices) + '.grl', readlist=True)[0]
         #'Graphs/bigtrees1.grl'
-        self._graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
+        try:
+            self._graph_list_original = loadgraph('Graphs/' + location + '.grl', readlist=True)[0]
+        except FileNotFoundError:
+            self._graph_list_original = loadgraph('Graphs/' + location + '.gr', readlist=True)[0]
+        self._location = location
+
+    def get_graph(self):
+        return loadgraph('Graphs/' + self._location + '.grl', readlist=True)[0]
 
     def find_twins(self):
         graph_list = self._graph_list_original
@@ -63,51 +71,14 @@ class GIFinder():
     def find_automorphisms(self, search_for_isos=True):
 
         # part I - initial coloring (also sorts to color)
-        graph_list = self.graph_list_original
+        graph_list = copy.deepcopy(self._graph_list_original)
 
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
         if (search_for_isos):
-            isomorphic = []
 
-            # adds all graphs with the same number of colors to the list of possibly isomorphic graphs
-            if len(graph_info_list) == 1:
-                isomorphic.append((0, 0))
-            for i in range(0, len(graph_info_list)):
-                for j in range(i + 1, len(graph_info_list)):
-                    if graph_info_list[i].num_of_colors() == graph_info_list[j].num_of_colors():
-                        isomorphic.append((i, j))
+            new_isos = self.find_isomorphisms()
 
-            if self._pre_process:
-                # part I.2 pre-processing: twins
-                graph_list[0].find_false_twins()
-
-            # part II - recursive coloring
-            #print('- Recursive coloring...')
-            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list, graph_info_list, isomorphic)
-
-            # update colors of nodes in graph (only done when saving results)
-            if self._save_results:
-                for i in range(0, len(graph_info_list)):
-                    sorted_to_label_vertices = MergeAndSearchTools.sort_vertex_label(sorted_vertices_list[i])
-                    for j in range(0, len(sorted_to_label_vertices)):
-                        graph_list[i].V()[j].set_colornum(
-                           sorted_to_label_vertices[graph_list[i].V()[j].get_label()].get_colornum())
-
-            # recursively get rid of duplicates or remove iso if proven impossible
-            isomorphic_zipped = MergeAndSearchTools.zip_tuples_isomorphisms(isomorphic[:])
-            new_isos = []
-            undecided_found = False
-            for entry in isomorphic_zipped[:]:
-                if graph_info_list[entry[0]].has_duplicate_colors():
-                    undecided_found = True
-                    isos = MergeAndSearchTools.zip_tuples_isomorphisms(
-                        self.match_pairs_rec(graph_list, sorted_vertices_list, graph_info_list,
-                                             MergeAndSearchTools.blow_tuples_isomorphisms_list(entry), []))
-                    if len(isos) > 0:
-                        new_isos.extend(isos)
-                else:
-                    new_isos.append(entry)
-            print('Sets of isomorphic graphs -Number of automorphisms')
+            print('Sets of isomorphic graphs: Number of automorphisms:')
             for i in range(0, len(new_isos)):
                 sorted_graph_lists = [sorted_vertices_list[new_isos[i][0]], copy.deepcopy(sorted_vertices_list[new_isos[i][0]])]
                 graph_info_lists = [graph_info_list[new_isos[i][0]], graph_info_list[new_isos[i][0]].get_copy()]
@@ -136,28 +107,35 @@ class GIFinder():
                 print([i],' ',counter)
         return 0
 
-            print(stab, orb)
     def find_isomorphisms(self):
 
         graph_list = self._graph_list_original
 
+        if len(graph_list) == 1:
+            graph_list.append(self.get_graph()[0])
+
         # part I - initial coloring (also sorts to color)
         sorted_vertices_list, graph_info_list = self.color_all_vertices_by_degree(graph_list)
+        # sorted_vertices_list = [None] * len(graph_list)
+        # graph_info_list = [None] * len(graph_list)
+        # for i in range(0, len(graph_list)):
+        #     sorted_vertices_list[i] = MergeAndSearchTools.sort_vertex_color(graph_list[i].V())
+        #     graph_info_list[i] = GraphInfo(i)
 
         automorphisms = [1]*len(graph_list)
         if self._pre_process:
             # part I.2 pre-processing: twins
             automorphisms = self.find_false_twins_rec(graph_list, sorted_vertices_list, graph_info_list)
 
+        # vertex_copy =
+
         isomorphic = []
         # adds all graphs with the same number of colors to the list of possibly isomorphic graphs
-        if len(graph_info_list) == 1:
-            isomorphic.append((0, 0)) # <- not nice
-        else:
-            for i in range(0, len(graph_info_list)):
-                for j in range(i + 1, len(graph_info_list)):
-                    if graph_info_list[i].num_of_colors() == graph_info_list[j].num_of_colors():
-                        isomorphic.append((i, j))
+        for i in range(0, len(graph_info_list)):
+            for j in range(i + 1, len(graph_info_list)):
+                if graph_info_list[i].num_of_colors() == graph_info_list[j].num_of_colors():
+                    isomorphic.append((i, j))
+
 
         # part II - recursive coloring
         print('- Recursive coloring...')
@@ -201,13 +179,25 @@ class GIFinder():
                 print(entry)
         else:
             print('None')
+
+        numbers_seen = []
+        for i in range(0, len(new_isos)):
+            for j in range(0, len(new_isos[i])):
+                numbers_seen.append(new_isos[i][j])
+        numbers_seen = MergeAndSearchTools.sort_number(numbers_seen)
+
+        for i in range(0, len(graph_list)):
+            if MergeAndSearchTools.search_number(numbers_seen, i, 0) == -1:
+                new_isos.append([i])
         return new_isos
 
     def find_false_twins_rec(self, graph_list, sorted_vertices_list, graph_info_list):
+        print('Finding false twins...')
         stable = False
         all_automorphisms = [1]*len(sorted_vertices_list)
         non_iso_graphs = []
         # it might be that it is always stable after one (two) iterations
+        counter = 0
         while not stable:
             stable = True
             # get twins of every graph
@@ -223,20 +213,18 @@ class GIFinder():
                     stable = False
             if stable:
                 break
-            # compare twin lists if more than one graph
-            if len(all_twins) > 1:
-                for i in range(0, len(all_twins)):
-                    for j in range(i + 1, len(all_twins)):
-                        # naïve, but fast: compare only automorphisms
-                        if len(all_twins[i]) != len(all_twins[j]):
-                            non_iso_graphs.append((i, j))
             # get max color
             max_color = graph_info_list[0].max_number()
             for i in range(1, len(graph_info_list)):
                 if graph_info_list[i].max_number() > max_color:
                     max_color = graph_info_list[i].max_number()
             # remove twins from graphs
+            print('max_color:', max_color)
+            print('twins:', all_twins)
+            print('remove:', twins_to_be_removed)
             self.remove_twins_from_graph_and_color(graph_list, sorted_vertices_list, graph_info_list, all_twins, twins_to_be_removed, max_color)
+            counter += 1
+        print(counter)
         return all_automorphisms
 
     # a twin cannot be a twin on its own
@@ -332,6 +320,7 @@ class GIFinder():
         return MergeAndSearchTools.zip_tuples_isomorphisms(twins)
 
     def remove_twins_from_graph_and_color(self, graphs, vertices, graph_info_list, twins_of_all_graphs, twins_to_be_removed, max_color):
+        print('Changing twin colors...')
         color_matches = [] # [curr_color [num_of_twins, new_color]] sorted to first two items
         for i in range(0, len(twins_of_all_graphs)):
             for j in range(0, len(twins_of_all_graphs[i])):
@@ -350,15 +339,17 @@ class GIFinder():
                     if index_num_of_twins == -1:
                         # twins with this current color and this number of elements have not been encountered yet: add it and color accordingly
                         max_color += 1
-                        if max_color == 9:
-                            pass
                         new_item = (curr_num_of_twins, max_color)
                         color_matches[index_of_color][1], index_num_of_twins = MergeAndSearchTools.zip_tuple(color_matches[index_of_color][1], new_item, 0)
                         graph_info_list[i].swap_colors(max_color, twins_of_all_graphs[i][j][k][0].colornum())
+                        print('swap new', i, twins_of_all_graphs[i][j][k][0].get_label(), 'len=' + str(len(twins_of_all_graphs[i][j][k])), ':', twins_of_all_graphs[i][j][k][0].colornum(), '->', max_color, ':', graph_info_list[i].get_all_colors())
                         twins_of_all_graphs[i][j][k][0].set_colornum(max_color)
                     else:
-                        graph_info_list[i].swap_colors(max_color, twins_of_all_graphs[i][j][k][0].colornum())
-                        twins_of_all_graphs[i][j][k][0].set_colornum(color_matches[index_of_color][1][index_num_of_twins][1])
+                        color = color_matches[index_of_color][1][index_num_of_twins][1]
+                        graph_info_list[i].swap_colors(color, twins_of_all_graphs[i][j][k][0].colornum())
+                        print('swap curr', i, twins_of_all_graphs[i][j][k][0].get_label(), 'len=' + str(len(twins_of_all_graphs[i][j][k])), ':', twins_of_all_graphs[i][j][k][0].colornum(), '->', color, ':', graph_info_list[i].get_all_colors())
+                        twins_of_all_graphs[i][j][k][0].set_colornum(color)
+        print('colormatches:', color_matches)
         # finally remove twins from all graphs
         for i in range(0, len(twins_to_be_removed)):
             graphs[i].update_edges(twins_to_be_removed[i], graph_info_list[i])
@@ -385,10 +376,10 @@ class GIFinder():
             sorted_vertices_list[entry[1]] = MergeAndSearchTools.restore_colors(sorted_vertices_list[entry[1]], color_copy_1)
 
             if is_isomorphic:
-                #print('Iso-pair:', entry)
+                print('Iso-pair:', entry)
                 temp_matches.append(entry)
             else:
-                #print('Non-iso-pair:', entry)
+                print('Non-iso-pair:', entry)
                 temp_mismatches.append(entry[1])
         matches.extend(temp_matches)
         if len(temp_mismatches) >= 2:
@@ -568,21 +559,22 @@ class GIFinder():
 
         # this boolean could be true (and should be reset) from former color refinement tasks
         graph_info_list[tuple[0]].set_has_converged(False)
-        graph_info_list[tuple[1]].set_has_converged(False)
+        if tuple[0] != tuple[1]:
+            graph_info_list[tuple[1]].set_has_converged(False)
 
         # change the color of one dub in the first graph and re-sort (wisely)
         graph_info_list[tuple[0]].swap_colors(max_color, double_colors[0][0])
         sorted_vertices_list[tuple[0]] = self.recolor_and_sort(sorted_vertices_list[tuple[0]], indices[0], 0, max_color)
-        self.check_integrity(sorted_vertices_list[tuple[0]], graph_info_list[tuple[0]])
+        # self.check_integrity(sorted_vertices_list[tuple[0]], graph_info_list[tuple[0]])
 
         color_copy_0 = MergeAndSearchTools.copy_colors(sorted_vertices_list[tuple[0]])
 
         for i in range(0, len(indices[1])):
 
             # some nice status printing
-            #for p in range(0, depth):
-            #    print(end=' ')
-            #print(depth, 'i=' + str(i), 'mcol=' + str(max_color), end=' ')
+            for p in range(0, depth):
+               print(end=' ')
+            print(depth, 'i=' + str(i), 'mcol=' + str(max_color), end=' ')
 
             # copy the vertices, info lists and indices to try coloring (and be able to undo this)
             graph_info_list_copy_0 = graph_info_list[tuple[0]].get_copy()
@@ -595,7 +587,7 @@ class GIFinder():
             # change the color of one dub in the other graph and re-sort (wisely)
             graph_info_list_copy_1.swap_colors(max_color, double_colors[0][0])
             sorted_vertices_list[tuple[1]] = self.recolor_and_sort(sorted_vertices_list[tuple[1]], indices_copy, i, max_color)
-            self.check_integrity(sorted_vertices_list[tuple[1]], graph_info_list_copy_1)
+            # self.check_integrity(sorted_vertices_list[tuple[1]], graph_info_list_copy_1)
 
             # # set all neighbors to be changed an re-sort after <- might be inefficient TODO make this work :)
             # sorted_vertices_list[tuple[0]][indices[0][0][1]].set_nbs_color_changed(True)
@@ -620,7 +612,7 @@ class GIFinder():
             gi_list[tuple[1]] = graph_info_list_copy_1
 
             # main step : recursively color neighbors of graphs until coloring is stable again
-            self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, gi_list, tuple_list)
+            print('it=' + str(self.color_vertices_by_neighbor_rec(graph_list, sorted_vertices_list_copy, gi_list, tuple_list)), tuple)
 
             if len(tuple_list) > 0:
                 iso_found = self.graphs_have_isomorphisms(self, graph_list, sorted_vertices_list_copy, gi_list, tuple, depth + 1)
@@ -874,8 +866,33 @@ class GIFinder():
         return vertices_list
 
 def test_iso_speed():
+    # t = time()
+    # gi_finder = GIFinder('basicGI1', True, False, True)
+    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    # print('>> Run time', time() - t, 'sec.')
+
+    # t = time()
+    # gi_finder = GIFinder('bonusGI1', True, False, True)
+    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    # print('>> Run time', time() - t, 'sec.')
+
+    # t = time()
+    # gi_finder = GIFinder('bonusGI2', True, False, True)
+    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    # print('>> Run time', time() - t, 'sec.')
+
+    # t = time()
+    # gi_finder = GIFinder('bonusGI3', False, False, True)
+    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    # print('>> Run time', time() - t, 'sec.')
+
+    # t = time()
+    # gi_finder = GIFinder('bonusGI4', True, False, True)
+    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    # print('>> Run time', time() - t, 'sec.')
+
     t = time()
-    gi_finder = GIFinder('cographs1', True, False, True)
+    gi_finder = GIFinder('wheeljoin14', True, False, True) # 'falsetwins_2_17'
     x = gi_finder.find_isomorphisms() # find_isomorphisms()
     print('>> Run time', time() - t, 'sec.')
 

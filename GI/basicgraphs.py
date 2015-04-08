@@ -412,9 +412,8 @@ class graph():
 
         for entry in to_be_removed:
             # remove vertex
-            if entry.get_label() == 37:
-                pass
             graph_info_list_item.decrement_num_of_a_color(entry.colornum()) # should not be forgotten
+            print('rem curr', self.get_label(), entry.get_label(), ':', entry.colornum(), '->', 'None', ':', graph_info_list_item.get_all_colors())
             self._V.remove(entry)
 
 

@@ -12,7 +12,7 @@ Stores info about a currently being colored and evaluated graph (for checking is
 """
 
 
-class GraphInfo():
+class GraphInfo:
 
     def __init__(self, graph_id, has_converged=False):
         self._graph_id = graph_id
