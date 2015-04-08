@@ -187,6 +187,36 @@ def sort_vertex_color_and_nbs_to_label(vertices):
     else:
         return vertices
 
+# Merge sorts the list of vertices sorts to color
+def sort_vertex_color_and_nbs_to_label(vertices):
+    if len(vertices) > 1:
+        i = int((len(vertices) / 2))
+        f = sort_vertex_color_and_nbs_to_label(vertices[:i])
+        s = sort_vertex_color_and_nbs_to_label(vertices[i:])
+        r = []
+        fi = si = 0
+        while fi < len(f) and si < len(s):
+            if f[fi].get_colornum() < s[si].get_colornum():
+                r.append(f[fi])
+                fi += 1
+            elif f[fi].get_colornum() == s[si].get_colornum():
+                comparison = compare_vertex_label(f[fi].nbs_sorted_to_label(), s[si].nbs_sorted_to_label())
+                if comparison <= 0:
+                    r.append(f[fi])
+                    fi += 1
+                else:
+                    r.append(s[si])
+                    si += 1
+            else:
+                r.append(s[si])
+                si += 1
+        if fi < len(f):
+            r += f[fi:]
+        elif si < len(s):
+            r += s[si:]
+        return r
+    else:
+        return vertices
 
 # Merge sorts the list of vertices sorts to color
 def sort_vertex_color(vertices):
@@ -325,7 +355,7 @@ def zip_nodes_label(vertices_list, a_vertex):
     if len(vertices_list) == 0:
         result.append(a_vertex)
         return result
-    fi = search_vertex_color(vertices_list, a_vertex.get_label(), -1)
+    fi = search_vertex_label_list(vertices_list, a_vertex.get_label(),-1)
     if fi != -1:
         result += vertices_list[:(fi + 1)]
     result.append(a_vertex)
@@ -513,6 +543,32 @@ def search_vertex_color(vertices, color, action):
                 h = m - 1
         if vertices[l].get_colornum() == color or (action == -1 and vertices[l].get_colornum() < color) \
                 or (action == 1 and vertices[l].get_colornum() > color):
+            return l
+        elif action == -1 and l > 0:
+            return l - 1
+        elif action == 1 and l < len(vertices) - 1:
+            return l + 1
+        else:
+            return -1
+    else:
+        return -1
+
+# searches for a vertex with this color
+# Action is whether to search for equal (0), smaller or equal (-1) or bigger or equal (1)
+def search_vertex_label_list(vertices, label, action):
+    if len(vertices) > 0:
+        l = 0
+        h = len(vertices) - 1
+        while h - l > 0 and vertices[l].get_label() != label:
+            m = int((l + h) / 2)
+            if vertices[m].get_label() == label:
+                l = m
+            elif vertices[m].get_label() < label:
+                l = m + 1
+            else:
+                h = m - 1
+        if vertices[l].get_label() == label or (action == -1 and vertices[l].get_label() < label) \
+                or (action == 1 and vertices[l].get_label() > label):
             return l
         elif action == -1 and l > 0:
             return l - 1
