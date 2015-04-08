@@ -228,7 +228,9 @@ class GIFinder():
             print('max_color:', max_color)
             print('twins:', all_twins)
             print('remove:', twins_to_be_removed)
+            print(sorted_vertices_list)
             self.remove_twins_from_graph_and_color(graph_list, sorted_vertices_list, graph_info_list, all_twins, twins_to_be_removed, max_color)
+            print(sorted_vertices_list)
             counter += 1
         print(counter)
         return all_automorphisms
@@ -329,8 +331,6 @@ class GIFinder():
 
         curr_nbs = sorted_vertices_list_item[0].nbs_sorted_to_label()
         index0 = MergeAndSearchTools.zip_nodes_label(curr_nbs, sorted_vertices_list_item[0])
-        #curr_nbs.append(sorted_vertices_list_item[0].get_label())
-        #MergeAndSearchTools.sort_number(curr_nbs)
 
         for i in range(1, len(sorted_vertices_list_item)):
             if curr_color == sorted_vertices_list_item[i].colornum():
@@ -926,7 +926,7 @@ class GIFinder():
                         # noinspection PyTypeChecker
                         for entry in color_changes_within_iteration[i]:
                             changed_one = sorted_to_label_changes[MergeAndSearchTools.search_vertex_label(
-                                sorted_to_label_changes, entry[0])]
+                                sorted_to_label_changes, entry[0], 0)]
                             changed_one.set_colornum(entry[1])
                             # if changes[i] is None: TODO
                             #     changes[i] = []
@@ -967,29 +967,24 @@ def test_iso_speed():
     # x = gi_finder.find_isomorphisms() # find_isomorphisms()
     # print('>> Run time', time() - t, 'sec.')
 
-    # t = time()
-    # gi_finder = GIFinder('bonusGI1', True, False, True)
-    # x = gi_finder.find_isomorphisms() # find_isomorphisms()
-    # print('>> Run time', time() - t, 'sec.')
+    t = time()
+    gi_finder = GIFinder('Cographs1', True, False, True)
+    x = gi_finder.find_isomorphisms() # find_isomorphisms()
+    print('>> Run time', time() - t, 'sec.')
 
     # t = time()
     # gi_finder = GIFinder('bonusGI2', True, False, True)
     # x = gi_finder.find_isomorphisms() # find_isomorphisms()
     # print('>> Run time', time() - t, 'sec.')
-
+    #
     # t = time()
     # gi_finder = GIFinder('bonusGI3', False, False, True)
     # x = gi_finder.find_isomorphisms() # find_isomorphisms()
     # print('>> Run time', time() - t, 'sec.')
-
+    #
     # t = time()
     # gi_finder = GIFinder('bonusGI4', True, False, True)
     # x = gi_finder.find_isomorphisms() # find_isomorphisms()
     # print('>> Run time', time() - t, 'sec.')
-
-    t = time()
-    gi_finder = GIFinder('bigtrees3', True, False, True) # 'falsetwins_2_17'
-    x = gi_finder.find_isomorphisms()
-    print('>> Run time', time() - t, 'sec.')
 
 test_iso_speed()
